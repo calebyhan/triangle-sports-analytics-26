@@ -259,7 +259,7 @@ class PredictionIntervalModel:
     Quantile regression model for prediction intervals
     Uses gradient boosting with quantile loss
     """
-    
+
     def __init__(self, coverage: float = 0.70, n_estimators: int = 100):
         """
         Args:
@@ -268,7 +268,7 @@ class PredictionIntervalModel:
         """
         self.coverage = coverage
         alpha = 1 - coverage
-        
+
         self.lower_model = GradientBoostingRegressor(
             loss='quantile',
             alpha=alpha/2,
@@ -290,29 +290,29 @@ class PredictionIntervalModel:
             max_depth=4,
             random_state=42
         )
-        
+
         self.feature_names = None
         self.is_fitted = False
-    
+
     def fit(self, X_train: pd.DataFrame, y_train: pd.Series) -> 'PredictionIntervalModel':
         """Train all quantile models"""
         self.feature_names = X_train.columns.tolist()
-        
+
         self.lower_model.fit(X_train, y_train)
         self.upper_model.fit(X_train, y_train)
         self.median_model.fit(X_train, y_train)
-        
+
         self.is_fitted = True
         return self
-    
+
     def predict(self, X_test: pd.DataFrame) -> np.ndarray:
         """Predict median (point estimate)"""
         return self.median_model.predict(X_test[self.feature_names])
-    
+
     def predict_interval(self, X_test: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
         """
         Predict lower and upper bounds
-        
+
         Returns:
             Tuple of (lower_bound, upper_bound) arrays
         """
@@ -320,25 +320,332 @@ class PredictionIntervalModel:
         lower = self.lower_model.predict(X_subset)
         upper = self.upper_model.predict(X_subset)
         return lower, upper
-    
+
     def evaluate_coverage(self, X_test: pd.DataFrame, y_test: pd.Series) -> Dict[str, float]:
         """
         Evaluate prediction interval coverage
-        
+
         Returns:
             Dictionary with coverage and average width
         """
         lower, upper = self.predict_interval(X_test)
-        
+
         # Check if actual values fall within intervals
         in_interval = (y_test >= lower) & (y_test <= upper)
         coverage = in_interval.mean()
-        
+
         # Average interval width
         avg_width = (upper - lower).mean()
-        
+
         return {
             'coverage': coverage,
             'avg_width': avg_width,
             'meets_requirement': coverage >= self.coverage
         }
+
+
+class ImprovedSpreadModel:
+    """
+    Improved ensemble model combining Ridge and LightGBM
+
+    Research shows:
+    - LightGBM achieves ~9.09 MAE with proper features
+    - Ridge provides stable baseline
+    - Ensemble typically outperforms individual models
+    """
+
+    def __init__(
+        self,
+        ridge_alpha: float = 1.0,
+        lgbm_params: Optional[Dict] = None,
+        weights: Tuple[float, float] = (0.4, 0.6),
+        use_lgbm: bool = True
+    ):
+        """
+        Initialize improved spread model
+
+        Args:
+            ridge_alpha: Regularization for Ridge
+            lgbm_params: Parameters for LightGBM
+            weights: (ridge_weight, lgbm_weight) for ensemble
+            use_lgbm: If False, fall back to GradientBoosting
+        """
+        self.ridge = Ridge(alpha=ridge_alpha)
+        self.scaler = StandardScaler()
+        self.weights = weights
+        self.use_lgbm = use_lgbm and HAS_LIGHTGBM
+
+        # Default LightGBM parameters (tuned for spread prediction)
+        default_lgbm_params = {
+            'n_estimators': 100,
+            'max_depth': 6,
+            'learning_rate': 0.1,
+            'num_leaves': 31,
+            'min_child_samples': 20,
+            'subsample': 0.8,
+            'colsample_bytree': 0.8,
+            'reg_alpha': 0.1,
+            'reg_lambda': 0.1,
+            'random_state': 42,
+            'verbose': -1,
+        }
+
+        if lgbm_params:
+            default_lgbm_params.update(lgbm_params)
+
+        if self.use_lgbm:
+            self.gbm = lgb.LGBMRegressor(**default_lgbm_params)
+        else:
+            # Fallback to sklearn GradientBoosting
+            self.gbm = GradientBoostingRegressor(
+                n_estimators=default_lgbm_params['n_estimators'],
+                max_depth=default_lgbm_params['max_depth'],
+                learning_rate=default_lgbm_params['learning_rate'],
+                random_state=42
+            )
+
+        self.feature_names = None
+        self.is_fitted = False
+
+    def fit(
+        self,
+        X_train: pd.DataFrame,
+        y_train: pd.Series,
+        X_val: Optional[pd.DataFrame] = None,
+        y_val: Optional[pd.Series] = None
+    ) -> 'ImprovedSpreadModel':
+        """
+        Train both models
+
+        Args:
+            X_train: Training features
+            y_train: Training targets
+            X_val: Optional validation features (for early stopping)
+            y_val: Optional validation targets
+        """
+        self.feature_names = X_train.columns.tolist()
+
+        # Scale features for Ridge
+        X_scaled = self.scaler.fit_transform(X_train)
+        self.ridge.fit(X_scaled, y_train)
+
+        # Train GBM (unscaled - tree models don't need scaling)
+        if self.use_lgbm and X_val is not None and y_val is not None:
+            # Use early stopping
+            self.gbm.fit(
+                X_train, y_train,
+                eval_set=[(X_val, y_val)],
+                callbacks=[lgb.early_stopping(stopping_rounds=10, verbose=False)]
+            )
+        else:
+            self.gbm.fit(X_train, y_train)
+
+        self.is_fitted = True
+        return self
+
+    def predict(self, X_test: pd.DataFrame) -> np.ndarray:
+        """Make ensemble predictions"""
+        if not self.is_fitted:
+            raise ValueError("Model not fitted yet")
+
+        X_subset = X_test[self.feature_names]
+
+        # Ridge prediction (needs scaling)
+        X_scaled = self.scaler.transform(X_subset)
+        ridge_pred = self.ridge.predict(X_scaled)
+
+        # GBM prediction
+        gbm_pred = self.gbm.predict(X_subset)
+
+        # Weighted ensemble
+        ensemble_pred = (
+            self.weights[0] * ridge_pred +
+            self.weights[1] * gbm_pred
+        )
+
+        return ensemble_pred
+
+    def predict_components(self, X_test: pd.DataFrame) -> Dict[str, np.ndarray]:
+        """Return predictions from each component model"""
+        X_subset = X_test[self.feature_names]
+
+        X_scaled = self.scaler.transform(X_subset)
+
+        return {
+            'ridge': self.ridge.predict(X_scaled),
+            'gbm': self.gbm.predict(X_subset),
+            'ensemble': self.predict(X_test)
+        }
+
+    def get_feature_importance(self) -> pd.DataFrame:
+        """Get feature importance from GBM model"""
+        if not self.is_fitted:
+            raise ValueError("Model not fitted yet")
+
+        importance = self.gbm.feature_importances_
+
+        return pd.DataFrame({
+            'feature': self.feature_names,
+            'importance': importance
+        }).sort_values('importance', ascending=False)
+
+    def get_ridge_coefficients(self) -> pd.DataFrame:
+        """Get Ridge regression coefficients"""
+        if not self.is_fitted:
+            raise ValueError("Model not fitted yet")
+
+        return pd.DataFrame({
+            'feature': self.feature_names,
+            'coefficient': self.ridge.coef_
+        }).sort_values('coefficient', key=abs, ascending=False)
+
+
+class CalibratedSpreadModel:
+    """
+    Model focused on calibration rather than just accuracy
+
+    Research shows calibration matters more than accuracy for betting:
+    - ROI +34.69% with calibration-based selection
+    - ROI -35.17% with accuracy-based selection
+    """
+
+    def __init__(self, base_model: Any = None):
+        """
+        Args:
+            base_model: Base model to calibrate (default: Ridge)
+        """
+        if base_model is None:
+            self.base_model = Ridge(alpha=1.0)
+        else:
+            self.base_model = base_model
+
+        self.scaler = StandardScaler()
+        self.residual_std = None
+        self.feature_names = None
+        self.is_fitted = False
+
+    def fit(self, X_train: pd.DataFrame, y_train: pd.Series) -> 'CalibratedSpreadModel':
+        """Train model and estimate prediction uncertainty"""
+        self.feature_names = X_train.columns.tolist()
+
+        X_scaled = self.scaler.fit_transform(X_train)
+        self.base_model.fit(X_scaled, y_train)
+
+        # Estimate residual standard deviation for calibration
+        y_pred = self.base_model.predict(X_scaled)
+        residuals = y_train - y_pred
+        self.residual_std = np.std(residuals)
+
+        self.is_fitted = True
+        return self
+
+    def predict(self, X_test: pd.DataFrame) -> np.ndarray:
+        """Make point predictions"""
+        X_scaled = self.scaler.transform(X_test[self.feature_names])
+        return self.base_model.predict(X_scaled)
+
+    def predict_with_confidence(
+        self,
+        X_test: pd.DataFrame,
+        confidence: float = 0.80
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Make predictions with confidence intervals
+
+        Args:
+            X_test: Test features
+            confidence: Confidence level (default 80%)
+
+        Returns:
+            Tuple of (predictions, lower_bound, upper_bound)
+        """
+        from scipy import stats
+
+        predictions = self.predict(X_test)
+
+        # Calculate z-score for confidence level
+        alpha = 1 - confidence
+        z = stats.norm.ppf(1 - alpha / 2)
+
+        # Confidence interval
+        margin = z * self.residual_std
+        lower = predictions - margin
+        upper = predictions + margin
+
+        return predictions, lower, upper
+
+    def brier_score(self, y_true: np.ndarray, y_pred: np.ndarray) -> float:
+        """
+        Calculate Brier score for calibration assessment
+
+        Lower is better (0 = perfect calibration)
+        """
+        # Convert to win probability (sigmoid of spread)
+        prob_true = (y_true > 0).astype(float)
+        prob_pred = 1 / (1 + np.exp(-y_pred / 5))  # Spread to probability
+
+        return np.mean((prob_pred - prob_true) ** 2)
+
+
+def cross_validate_model(
+    model: Any,
+    X: pd.DataFrame,
+    y: pd.Series,
+    n_splits: int = 5,
+    time_series: bool = True
+) -> Dict[str, List[float]]:
+    """
+    Cross-validate a spread prediction model
+
+    Args:
+        model: Model instance with fit/predict methods
+        X: Features
+        y: Target (margins)
+        n_splits: Number of CV folds
+        time_series: If True, use TimeSeriesSplit
+
+    Returns:
+        Dictionary with MAE and RMSE for each fold
+    """
+    if time_series:
+        cv = TimeSeriesSplit(n_splits=n_splits)
+    else:
+        from sklearn.model_selection import KFold
+        cv = KFold(n_splits=n_splits, shuffle=True, random_state=42)
+
+    mae_scores = []
+    rmse_scores = []
+    brier_scores = []
+
+    for train_idx, val_idx in cv.split(X):
+        X_train, X_val = X.iloc[train_idx], X.iloc[val_idx]
+        y_train, y_val = y.iloc[train_idx], y.iloc[val_idx]
+
+        # Clone and fit model
+        model_clone = type(model)() if hasattr(model, '__class__') else model
+        model_clone.fit(X_train, y_train)
+
+        # Predict
+        y_pred = model_clone.predict(X_val)
+
+        # Calculate metrics
+        mae = np.abs(y_pred - y_val).mean()
+        rmse = np.sqrt(((y_pred - y_val) ** 2).mean())
+
+        mae_scores.append(mae)
+        rmse_scores.append(rmse)
+
+        # Brier score if available
+        if hasattr(model_clone, 'brier_score'):
+            brier = model_clone.brier_score(y_val.values, y_pred)
+            brier_scores.append(brier)
+
+    return {
+        'mae': mae_scores,
+        'rmse': rmse_scores,
+        'brier': brier_scores if brier_scores else None,
+        'mae_mean': np.mean(mae_scores),
+        'mae_std': np.std(mae_scores),
+        'rmse_mean': np.mean(rmse_scores),
+        'rmse_std': np.std(rmse_scores),
+    }
