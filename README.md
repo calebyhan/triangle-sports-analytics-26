@@ -132,6 +132,8 @@ model.fit(X, y)
 
 - **Caleb Han** - calebhan@unc.edu
 - **Mason Mines** - mmines@unc.edu
+- **Mason Wang** - mywang@unc.edu
+- **Tony Wang** - anwang@unc.edu
 
 ---
 
