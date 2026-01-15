@@ -229,11 +229,11 @@ def main():
     submission.loc[submission.index[3], 'team_member'] = 'Tony Wang'
     submission.loc[submission.index[3], 'team_email'] = 'tonyw@unc.edu'
 
-    output_path = 'data/predictions/tsa_pt_spread_CMM_2026_real_data.csv'
+    output_path = 'data/predictions/tsa_pt_spread_CMMT_2026_real_data.csv'
     submission.to_csv(output_path, index=False)
     print(f"   ✓ Saved: {output_path}")
 
-    main_path = 'data/predictions/tsa_pt_spread_CMM_2026.csv'
+    main_path = 'data/predictions/tsa_pt_spread_CMMT_2026.csv'
     submission.to_csv(main_path, index=False)
     print(f"   ✓ Updated: {main_path}")
 

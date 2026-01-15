@@ -31,11 +31,10 @@ triangle-sports-analytics-26/
 │   ├── processed/
 │   │   └── team_stats_2025_26.csv             # Current season efficiency ratings
 │   └── predictions/
-│       └── tsa_pt_spread_CMM_2026.csv         # Final submission
+│       └── tsa_pt_spread_CMMT_2026.csv         # Final submission
 ├── notebooks/
-│   ├── 01_data_collection.ipynb                # Initial data gathering
-│   ├── 02_scrape_team_ratings.ipynb            # Fetch Barttorvik ratings
-│   └── 03_modeling.ipynb                       # Production modeling pipeline
+│   ├── 01_scrape_team_ratings.ipynb            # Fetch Barttorvik ratings
+│   └── 02_modeling.ipynb                       # Production modeling pipeline
 ├── src/
 │   ├── download_ncaa_hoops_data.py             # Download historical games
 │   ├── elo.py                                  # FiveThirtyEight Elo system
@@ -135,11 +134,11 @@ This will:
 3. Fetch current Barttorvik efficiency ratings
 4. Train Ridge + LightGBM ensemble
 5. Generate predictions for 78 ACC games
-6. Save to `data/predictions/tsa_pt_spread_CMM_2026.csv`
+6. Save to `data/predictions/tsa_pt_spread_CMMT_2026.csv`
 
 ### Interactive Notebooks
 ```bash
-jupyter notebook notebooks/03_modeling.ipynb
+jupyter notebook notebooks/02_modeling.ipynb
 ```
 
 ### Using the Models Programmatically
@@ -199,7 +198,7 @@ predictions = model.predict(X_test)
 
 ## Files for Submission
 
-1. ✅ **tsa_pt_spread_CMM_2026.csv** - Point spread predictions (78 games)
+1. ✅ **tsa_pt_spread_CMMT_2026.csv** - Point spread predictions (78 games)
 2. ✅ **Source code** - Complete training pipeline and models
 3. ✅ **README.md** - Methodology and results
 
