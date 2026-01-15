@@ -1,6 +1,5 @@
 """
 Fetch real historical NCAA basketball game results using CBBpy
-This replaces synthetic training data with actual game outcomes
 """
 
 import pandas as pd

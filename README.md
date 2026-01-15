@@ -16,7 +16,7 @@ This project predicts point spreads for 78 ACC basketball games in the 2025-26 s
 
 ### Key Achievement
 - **Cross-Validation MAE: 5.46 points** (52% better than naive baseline)
-- Trained on real game outcomes, not synthetic data
+- Trained on 33,746 real NCAA game outcomes from 2020-2025
 - Incorporates FiveThirtyEight-style Elo rating system
 - Ensemble model (Ridge + LightGBM) for optimal predictions
 
@@ -33,8 +33,9 @@ triangle-sports-analytics-26/
 │   └── predictions/
 │       └── tsa_pt_spread_CMM_2026.csv         # Final submission
 ├── notebooks/
-│   ├── 05_improved_modeling.ipynb              # Initial synthetic data model
-│   └── 06_real_data_training.ipynb             # Real game data training
+│   ├── 01_data_collection.ipynb                # Initial data gathering
+│   ├── 02_scrape_team_ratings.ipynb            # Fetch Barttorvik ratings
+│   └── 03_modeling.ipynb                       # Production modeling pipeline
 ├── src/
 │   ├── download_ncaa_hoops_data.py             # Download historical games
 │   ├── elo.py                                  # FiveThirtyEight Elo system
@@ -97,10 +98,11 @@ triangle-sports-analytics-26/
 | Ridge Regression | 6.02 ± 0.18 | - | 47% better |
 | **Ensemble (Final)** | **5.46 ± 0.22** | - | **52% better** ✅ |
 
-**Comparison to Previous Approaches:**
-- Synthetic data model: 8.82 MAE
-- Real data model: **5.46 MAE** (38% improvement)
-- Vegas estimate: ~8.5 MAE (our model is 36% better)
+**Benchmark Comparisons:**
+- Naive baseline (predict 0): 11.41 MAE
+- Elo system alone: 7.82 MAE (31% better than baseline)
+- Our ensemble model: **5.46 MAE** (52% better than baseline)
+- Estimated Vegas performance: ~8.5 MAE (our model is 36% better)
 
 ## Setup
 
@@ -137,7 +139,7 @@ This will:
 
 ### Interactive Notebooks
 ```bash
-jupyter notebook notebooks/06_real_data_training.ipynb
+jupyter notebook notebooks/03_modeling.ipynb
 ```
 
 ### Using the Models Programmatically
@@ -167,7 +169,7 @@ predictions = model.predict(X_test)
 - **Training Data:** 33,746 real NCAA games (2020-2025)
 - **Model:** Ridge + LightGBM Ensemble (40/60 weights)
 - **Cross-Validation MAE:** 5.46 ± 0.22 points
-- **Improvement over Synthetic Data:** 38% (8.82 → 5.46 MAE)
+- **Improvement over Baseline:** 52% (11.41 → 5.46 MAE)
 - **Key Insight:** Efficiency differential (99.6% feature importance) + Elo dynamics
 
 ### Top Predictive Features
@@ -204,23 +206,6 @@ predictions = model.predict(X_test)
 ---
 
 ## Implementation Notes
-
-### Why Real Data Matters
-Our initial synthetic data approach created matchups by:
-- Taking team efficiency ratings
-- Computing expected margin: `(home_em - away_em)/2 + 3.5`
-- Adding random noise: `N(0, 11)`
-
-**Problems with synthetic data:**
-- Assumes linear relationship between efficiency and outcomes
-- Misses momentum, matchup styles, and game dynamics
-- Oversimplified variance structure
-
-**Real data advantages:**
-- Learns from actual upsets and variance patterns
-- Elo system captures team trajectory over season
-- Better calibration for competitive D1 games
-- 38% MAE improvement (8.82 → 5.46)
 
 ### Selection Bias Analysis
 - Raw dataset: 33,746 games (includes all divisions)

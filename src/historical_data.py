@@ -212,66 +212,6 @@ class HistoricalDataCollector:
 
         return pd.DataFrame(games)
 
-    def create_synthetic_training_data(
-        self,
-        team_stats: pd.DataFrame,
-        seasons: List[int] = None,
-        games_per_matchup: int = 1,
-        margin_std: float = 11.0
-    ) -> pd.DataFrame:
-        """
-        Create synthetic training data from team statistics
-        This is a fallback when real game data isn't available
-
-        Args:
-            team_stats: DataFrame with team efficiency ratings by season
-            seasons: List of seasons to include
-            games_per_matchup: Number of synthetic games per matchup
-            margin_std: Standard deviation for margin of victory
-
-        Returns:
-            DataFrame with synthetic game data
-        """
-        if seasons is None:
-            seasons = team_stats['season'].unique().tolist()
-
-        np.random.seed(42)
-        games = []
-
-        for season in seasons:
-            season_stats = team_stats[team_stats['season'] == season]
-            teams = season_stats['team'].tolist()
-
-            for i, home_team in enumerate(teams):
-                for away_team in teams:
-                    if home_team == away_team:
-                        continue
-
-                    home_stats = season_stats[season_stats['team'] == home_team].iloc[0]
-                    away_stats = season_stats[season_stats['team'] == away_team].iloc[0]
-
-                    # Expected margin based on efficiency differential + HCA
-                    home_net = home_stats.get('adj_oe', 100) - home_stats.get('adj_de', 100)
-                    away_net = away_stats.get('adj_oe', 100) - away_stats.get('adj_de', 100)
-                    expected_margin = (home_net - away_net) / 2 + 3.5  # HCA
-
-                    for _ in range(games_per_matchup):
-                        # Add random noise
-                        actual_margin = expected_margin + np.random.normal(0, margin_std)
-
-                        games.append({
-                            'season': season,
-                            'home_team': home_team,
-                            'away_team': away_team,
-                            'expected_margin': expected_margin,
-                            'actual_margin': actual_margin,
-                            'home_adj_oe': home_stats.get('adj_oe', 100),
-                            'home_adj_de': home_stats.get('adj_de', 100),
-                            'away_adj_oe': away_stats.get('adj_oe', 100),
-                            'away_adj_de': away_stats.get('adj_de', 100),
-                        })
-
-        return pd.DataFrame(games)
 
     def fetch_barttorvik_team_data(self, year: int) -> pd.DataFrame:
         """
