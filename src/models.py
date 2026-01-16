@@ -34,14 +34,54 @@ class BaselineModel:
     
     HOME_COURT_ADVANTAGE = 3.5
     
-    def __init__(self):
+    def __init__(self) -> None:
         self.team_stats = {}
         self.is_fitted = False
     
-    def fit(self, historical_data: pd.DataFrame) -> 'BaselineModel':
+    def fit(self, X: pd.DataFrame, y: np.ndarray) -> 'BaselineModel':
         """
-        Calculate team averages from historical data
-        
+        Fit model using sklearn-style interface
+
+        Args:
+            X: Feature DataFrame with 'home_team' and 'away_team' columns
+            y: Target array of spreads (home_margin)
+
+        Returns:
+            Self for method chaining
+        """
+        # Build team statistics from X, y pairs
+        team_margins = {}
+
+        for idx, row in X.iterrows():
+            home = row['home_team']
+            away = row['away_team']
+            margin = y[idx] if isinstance(idx, int) else y[X.index.get_loc(idx)]
+
+            # Track home team performance
+            if home not in team_margins:
+                team_margins[home] = []
+            team_margins[home].append(margin)
+
+            # Track away team performance (negative margin)
+            if away not in team_margins:
+                team_margins[away] = []
+            team_margins[away].append(-margin)
+
+        # Calculate statistics for each team
+        for team, margins in team_margins.items():
+            self.team_stats[team] = {
+                'avg_margin': np.mean(margins),
+                'std_margin': np.std(margins),
+                'games_played': len(margins)
+            }
+
+        self.is_fitted = True
+        return self
+
+    def fit_from_historical_data(self, historical_data: pd.DataFrame) -> 'BaselineModel':
+        """
+        Calculate team averages from historical data (legacy method)
+
         Args:
             historical_data: DataFrame with columns ['team', 'points_scored', 'points_allowed']
         """
@@ -54,7 +94,7 @@ class BaselineModel:
                 'std_margin': (team_data['points_scored'] - team_data['points_allowed']).std(),
                 'games_played': len(team_data)
             }
-        
+
         self.is_fitted = True
         return self
     
@@ -101,33 +141,37 @@ class BaselineModel:
     def predict(self, matchups_df: pd.DataFrame) -> np.ndarray:
         """
         Predict point spreads for multiple games
-        
+
         Args:
-            matchups_df: DataFrame with 'Home' and 'Away' columns
-            
+            matchups_df: DataFrame with 'Home'/'home_team' and 'Away'/'away_team' columns
+
         Returns:
             Array of predicted spreads
         """
+        # Support both capitalized and lowercase column names
+        home_col = 'Home' if 'Home' in matchups_df.columns else 'home_team'
+        away_col = 'Away' if 'Away' in matchups_df.columns else 'away_team'
+
         predictions = []
         for _, row in matchups_df.iterrows():
-            pred = self.predict_single(row['Home'], row['Away'])
+            pred = self.predict_single(row[home_col], row[away_col])
             predictions.append(pred)
-        
+
         return np.array(predictions)
 
 
 class LinearSpreadModel:
     """Linear regression model for point spread prediction"""
     
-    def __init__(self, regularization: str = 'none', alpha: float = 1.0):
+    def __init__(self, model_type: str = 'none', alpha: float = 1.0) -> None:
         """
         Args:
-            regularization: 'none', 'ridge', or 'lasso'
+            model_type: 'none', 'ridge', or 'lasso'
             alpha: Regularization strength
         """
-        if regularization == 'ridge':
+        if model_type == 'ridge':
             self.model = Ridge(alpha=alpha)
-        elif regularization == 'lasso':
+        elif model_type == 'lasso':
             self.model = Lasso(alpha=alpha)
         else:
             self.model = LinearRegression()
@@ -164,13 +208,13 @@ class GradientBoostingSpreadModel:
     """Gradient boosting model for point spread prediction"""
     
     def __init__(
-        self, 
+        self,
         model_type: str = 'sklearn',
         n_estimators: int = 100,
         learning_rate: float = 0.1,
         max_depth: int = 5,
         random_state: int = 42
-    ):
+    ) -> None:
         """
         Args:
             model_type: 'sklearn', 'xgboost', or 'lightgbm'
@@ -232,7 +276,7 @@ class GradientBoostingSpreadModel:
 class EnsembleSpreadModel:
     """Ensemble model combining multiple base models"""
     
-    def __init__(self, models: List[Any], weights: Optional[List[float]] = None):
+    def __init__(self, models: List[Any], weights: Optional[List[float]] = None) -> None:
         """
         Args:
             models: List of fitted models
@@ -473,7 +517,7 @@ class ImprovedSpreadModel:
 
         return {
             'ridge': self.ridge.predict(X_scaled),
-            'gbm': self.gbm.predict(X_subset),
+            'lgbm': self.gbm.predict(X_subset),
             'ensemble': self.predict(X_test)
         }
 

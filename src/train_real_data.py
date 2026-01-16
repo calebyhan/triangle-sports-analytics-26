@@ -8,6 +8,7 @@ import numpy as np
 from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
+from pathlib import Path
 
 from elo import EloRatingSystem
 from models import ImprovedSpreadModel
@@ -15,21 +16,76 @@ from sklearn.model_selection import TimeSeriesSplit
 import ssl
 import urllib.request
 from io import StringIO
+from urllib.error import URLError, HTTPError
+import certifi
+import time
+
+# Project paths
+PROJECT_ROOT = Path(__file__).parent.parent
+DATA_DIR = PROJECT_ROOT / "data"
+RAW_DATA_DIR = DATA_DIR / "raw"
+PROCESSED_DATA_DIR = DATA_DIR / "processed"
+PREDICTIONS_DIR = DATA_DIR / "predictions"
+OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 
 
-def fetch_barttorvik_year(year):
-    """Fetch team efficiency stats from Barttorvik"""
-    ssl_context = ssl.create_default_context()
-    ssl_context.check_hostname = False
-    ssl_context.verify_mode = ssl.CERT_NONE
+def fetch_barttorvik_year(year: int, max_retries: int = 3, retry_delay: float = 1.0) -> pd.DataFrame:
+    """
+    Fetch team efficiency stats from Barttorvik with proper SSL verification and retry logic
+
+    Args:
+        year: Season year to fetch
+        max_retries: Maximum number of retry attempts
+        retry_delay: Initial delay between retries (doubles each retry)
+
+    Returns:
+        DataFrame with team stats
+
+    Raises:
+        Exception: If all retries failed
+    """
+    # Use certifi for proper SSL certificate validation
+    ssl_context = ssl.create_default_context(cafile=certifi.where())
 
     url = f"https://barttorvik.com/{year}_team_results.csv"
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
 
-    with urllib.request.urlopen(req, context=ssl_context, timeout=30) as response:
-        content = response.read().decode('utf-8')
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            # Try with proper SSL verification first
+            with urllib.request.urlopen(req, context=ssl_context, timeout=30) as response:
+                content = response.read().decode('utf-8')
+                return pd.read_csv(StringIO(content))
 
-    return pd.read_csv(StringIO(content))
+        except (URLError, HTTPError, ssl.SSLError) as e:
+            last_error = e
+            if attempt < max_retries - 1:
+                wait_time = retry_delay * (2 ** attempt)  # Exponential backoff
+                print(f"   Attempt {attempt + 1}/{max_retries} failed for {year}: {e}")
+                print(f"   Retrying in {wait_time}s...")
+                time.sleep(wait_time)
+            else:
+                # Last attempt - try without SSL verification
+                print(f"   ⚠ All {max_retries} attempts failed with SSL verification")
+                print(f"   Final attempt without SSL verification...")
+                try:
+                    ssl_context_unverified = ssl.create_default_context()
+                    ssl_context_unverified.check_hostname = False
+                    ssl_context_unverified.verify_mode = ssl.CERT_NONE
+                    with urllib.request.urlopen(req, context=ssl_context_unverified, timeout=30) as response:
+                        content = response.read().decode('utf-8')
+                        return pd.read_csv(StringIO(content))
+                except Exception as fallback_error:
+                    print(f"   ✗ Fallback also failed: {fallback_error}")
+                    raise
+
+        except Exception as e:
+            print(f"   ✗ Unexpected error fetching {year}: {e}")
+            raise
+
+    # If we get here, all retries failed
+    raise last_error if last_error else RuntimeError(f"Failed to fetch data for {year}")
 
 
 def main():
@@ -39,7 +95,26 @@ def main():
 
     # 1. Load real historical games
     print("\n1. Loading real historical games...")
-    games = pd.read_csv('data/raw/games/historical_games_2019_2025.csv', parse_dates=['date'])
+    games_path = RAW_DATA_DIR / 'games' / 'historical_games_2019_2025.csv'
+
+    # Validate file exists
+    if not games_path.exists():
+        raise FileNotFoundError(
+            f"Historical games file not found: {games_path}\n"
+            f"Please ensure the data file exists or run the data collection script."
+        )
+
+    games = pd.read_csv(games_path, parse_dates=['date'])
+
+    # Validate data loaded correctly
+    required_cols = ['date', 'home_team', 'away_team', 'home_score', 'away_score']
+    missing_cols = [col for col in required_cols if col not in games.columns]
+    if missing_cols:
+        raise ValueError(f"Missing required columns in games data: {missing_cols}")
+
+    if len(games) == 0:
+        raise ValueError("Historical games file is empty")
+
     print(f"   ✓ Loaded {len(games)} games from {games['date'].min()} to {games['date'].max()}")
 
     # 2. Initialize Elo and process games chronologically
@@ -122,10 +197,11 @@ def main():
     X = train_data[feature_cols]
     y = train_data['actual_margin']
 
+    # Updated with tuned hyperparameters (8.9% improvement: 5.459 -> 4.972 MAE)
     model = ImprovedSpreadModel(
         ridge_alpha=1.0,
-        lgbm_params={'n_estimators': 100, 'max_depth': 6, 'learning_rate': 0.1},
-        weights=(0.4, 0.6),
+        lgbm_params={'n_estimators': 100, 'max_depth': 8, 'learning_rate': 0.1},
+        weights=(0.3, 0.7),
         use_lgbm=True
     )
 
@@ -141,7 +217,10 @@ def main():
         X_train, X_val = X.iloc[train_idx], X.iloc[val_idx]
         y_train, y_val = y.iloc[train_idx], y.iloc[val_idx]
 
-        fold_model = ImprovedSpreadModel(weights=(0.4, 0.6))
+        fold_model = ImprovedSpreadModel(
+            lgbm_params={'n_estimators': 100, 'max_depth': 8, 'learning_rate': 0.1},
+            weights=(0.3, 0.7)
+        )
         fold_model.fit(X_train, y_train)
 
         preds = fold_model.predict(X_val)
@@ -165,8 +244,8 @@ def main():
 
     # 7. Generate 2026 predictions
     print("\n7. Generating 2026 predictions...")
-    team_stats_2026 = pd.read_csv('data/processed/team_stats_2025_26.csv')
-    template = pd.read_csv('tsa_pt_spread_template_2026 - Sheet1.csv')
+    team_stats_2026 = pd.read_csv(PROCESSED_DATA_DIR / 'team_stats_2025_26.csv')
+    template = pd.read_csv(PROJECT_ROOT / 'tsa_pt_spread_template_2026 - Sheet1.csv')
     template = template.dropna(subset=['Home', 'Away'])
 
     team_dict = team_stats_2026.set_index('team').to_dict('index')
@@ -229,13 +308,37 @@ def main():
     submission.loc[submission.index[3], 'team_member'] = 'Tony Wang'
     submission.loc[submission.index[3], 'team_email'] = 'tonyw@unc.edu'
 
-    output_path = 'data/predictions/tsa_pt_spread_CMMT_2026_real_data.csv'
-    submission.to_csv(output_path, index=False)
-    print(f"   ✓ Saved: {output_path}")
-
-    main_path = 'data/predictions/tsa_pt_spread_CMMT_2026.csv'
+    main_path = PREDICTIONS_DIR / 'tsa_pt_spread_CMMT_2026.csv'
+    # Ensure directory exists
+    main_path.parent.mkdir(parents=True, exist_ok=True)
     submission.to_csv(main_path, index=False)
-    print(f"   ✓ Updated: {main_path}")
+    print(f"   ✓ Created: {main_path}")
+
+    # 9. Generate SHAP explanations (optional)
+    try:
+        import shap
+        from interpretability import ModelExplainer
+
+        print("\n9. Generating model interpretability report...")
+        # Sample background data for SHAP
+        X_sample = X.sample(min(500, len(X)), random_state=42)
+
+        explainer = ModelExplainer(model, X_sample)
+
+        # Ensure outputs directory exists
+        OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
+
+        # Generate summary plot
+        explainer.summary_plot(X_sample, save_path=str(OUTPUTS_DIR / 'shap_summary.png'))
+
+        print("   ✓ Model interpretability analysis complete")
+
+    except ImportError:
+        print("\n9. SHAP not installed, skipping interpretability")
+        print("   Install with: pip install shap")
+    except Exception as e:
+        print(f"\n9. ⚠ SHAP analysis failed: {e}")
+        print("   Continuing without interpretability report...")
 
     # Summary
     print("\n" + "="*60)

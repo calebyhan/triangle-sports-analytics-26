@@ -15,10 +15,11 @@
 This project predicts point spreads for 78 ACC basketball games in the 2025-26 season using an ensemble machine learning model trained on **33,746 real historical NCAA basketball games** from 2020-2025.
 
 ### Key Achievement
-- **Cross-Validation MAE: 5.46 points** (52% better than naive baseline)
+- **Cross-Validation MAE: 4.97 points** (56% better than naive baseline)
 - Trained on 33,746 real NCAA game outcomes from 2020-2025
 - Incorporates FiveThirtyEight-style Elo rating system
-- Ensemble model (Ridge + LightGBM) for optimal predictions
+- Hyperparameter-tuned ensemble model (Ridge + LightGBM)
+- 95.8% direction accuracy in predicting game winners
 
 ## Project Structure
 
@@ -75,11 +76,12 @@ triangle-sports-analytics-26/
 
 ### Models
 
-**ImprovedSpreadModel - Ridge + LightGBM Ensemble**
-- Ridge Regression (40% weight) with feature scaling
-- LightGBM Gradient Boosting (60% weight)
-- Parameters: n_estimators=100, max_depth=6, learning_rate=0.1
+**ImprovedSpreadModel - Ridge + LightGBM Ensemble** (Hyperparameter-Tuned)
+- Ridge Regression (30% weight) with feature scaling
+- LightGBM Gradient Boosting (70% weight)
+- Tuned Parameters: n_estimators=100, max_depth=8, learning_rate=0.1
 - 5-fold time-series cross-validation
+- Grid search across 81 configurations for optimal performance
 
 **Training Details:**
 - Real game outcomes from 8,850 D1 vs D1 games (2020-2025)
@@ -95,13 +97,14 @@ triangle-sports-analytics-26/
 | Naive Baseline (predict 0) | 11.41 | - | - |
 | Elo System | 7.82 | - | 31% better |
 | Ridge Regression | 6.02 ± 0.18 | - | 47% better |
-| **Ensemble (Final)** | **5.46 ± 0.22** | - | **52% better** ✅ |
+| Ensemble (Original) | 5.46 ± 0.22 | - | 52% better |
+| **Ensemble (Tuned)** | **4.97 ± 0.33** | - | **56% better** ✅ |
 
 **Benchmark Comparisons:**
 - Naive baseline (predict 0): 11.41 MAE
 - Elo system alone: 7.82 MAE (31% better than baseline)
-- Our ensemble model: **5.46 MAE** (52% better than baseline)
-- Estimated Vegas performance: ~8.5 MAE (our model is 36% better)
+- Our tuned ensemble model: **4.97 MAE** (56% better than baseline)
+- Estimated Vegas performance: ~8.5 MAE (our model is 42% better)
 
 ## Setup
 

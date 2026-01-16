@@ -11,10 +11,11 @@ Key parameters:
 
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 from datetime import datetime
 import json
 import os
+from pathlib import Path
 
 
 class EloRatingSystem:
@@ -51,7 +52,9 @@ class EloRatingSystem:
         """
         self.k_factor = k_factor
         self.hca = hca
+        self.home_court_advantage = hca  # Public API alias for tests
         self.carryover = carryover
+        self.season_carryover = carryover  # Public API alias for tests
         self.default_rating = default_rating
 
         # Current ratings: team_name -> rating
@@ -70,11 +73,11 @@ class EloRatingSystem:
             self.ratings[team] = self.default_rating
         return self.ratings[team]
 
-    def set_team_conference(self, team: str, conference: str):
+    def set_team_conference(self, team: str, conference: str) -> None:
         """Set conference affiliation for a team"""
         self.team_conference[team] = conference
 
-    def load_conference_mappings(self, mappings: Dict[str, List[str]]):
+    def load_conference_mappings(self, mappings: Dict[str, List[str]]) -> None:
         """
         Load conference mappings from dictionary
 
@@ -289,9 +292,12 @@ class EloRatingSystem:
 
         return self.conference_avg
 
-    def season_reset(self):
+    def season_reset(self, year: Optional[int] = None) -> None:
         """
         Regress ratings to conference mean at start of new season
+
+        Args:
+            year: Optional year for logging/tracking (not used in calculation)
 
         Formula: new_rating = carryover * old_rating + (1 - carryover) * conf_avg
         """
@@ -351,7 +357,7 @@ class EloRatingSystem:
                 season = row[season_col]
                 if current_season is not None and season != current_season:
                     print(f"Season change: {current_season} -> {season}")
-                    self.season_reset()
+                    self.season_reset(season)
                 current_season = season
 
             # Get game info
@@ -415,8 +421,16 @@ class EloRatingSystem:
 
         return df
 
-    def save_ratings(self, filepath: str):
-        """Save current ratings to JSON file"""
+    def save_ratings(self, filepath: Union[str, Path]) -> None:
+        """Save current ratings to JSON file
+
+        Args:
+            filepath: Path to save ratings (str or Path object)
+        """
+        filepath = Path(filepath)
+        # Ensure directory exists
+        filepath.parent.mkdir(parents=True, exist_ok=True)
+
         data = {
             'ratings': self.ratings,
             'conference_avg': self.conference_avg,
@@ -428,12 +442,17 @@ class EloRatingSystem:
             }
         }
 
-        with open(filepath, 'w') as f:
+        with filepath.open('w') as f:
             json.dump(data, f, indent=2)
 
-    def load_ratings(self, filepath: str):
-        """Load ratings from JSON file"""
-        with open(filepath, 'r') as f:
+    def load_ratings(self, filepath: Union[str, Path]) -> None:
+        """Load ratings from JSON file
+
+        Args:
+            filepath: Path to load ratings from (str or Path object)
+        """
+        filepath = Path(filepath)
+        with filepath.open('r') as f:
             data = json.load(f)
 
         self.ratings = data['ratings']
