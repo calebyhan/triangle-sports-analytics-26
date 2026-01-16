@@ -12,80 +12,9 @@ from pathlib import Path
 
 from elo import EloRatingSystem
 from models import ImprovedSpreadModel
+from utils import fetch_barttorvik_year
 from sklearn.model_selection import TimeSeriesSplit
-import ssl
-import urllib.request
-from io import StringIO
-from urllib.error import URLError, HTTPError
-import certifi
-import time
-
-# Project paths
-PROJECT_ROOT = Path(__file__).parent.parent
-DATA_DIR = PROJECT_ROOT / "data"
-RAW_DATA_DIR = DATA_DIR / "raw"
-PROCESSED_DATA_DIR = DATA_DIR / "processed"
-PREDICTIONS_DIR = DATA_DIR / "predictions"
-OUTPUTS_DIR = PROJECT_ROOT / "outputs"
-
-
-def fetch_barttorvik_year(year: int, max_retries: int = 3, retry_delay: float = 1.0) -> pd.DataFrame:
-    """
-    Fetch team efficiency stats from Barttorvik with proper SSL verification and retry logic
-
-    Args:
-        year: Season year to fetch
-        max_retries: Maximum number of retry attempts
-        retry_delay: Initial delay between retries (doubles each retry)
-
-    Returns:
-        DataFrame with team stats
-
-    Raises:
-        Exception: If all retries failed
-    """
-    # Use certifi for proper SSL certificate validation
-    ssl_context = ssl.create_default_context(cafile=certifi.where())
-
-    url = f"https://barttorvik.com/{year}_team_results.csv"
-    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-
-    last_error = None
-    for attempt in range(max_retries):
-        try:
-            # Try with proper SSL verification first
-            with urllib.request.urlopen(req, context=ssl_context, timeout=30) as response:
-                content = response.read().decode('utf-8')
-                return pd.read_csv(StringIO(content))
-
-        except (URLError, HTTPError, ssl.SSLError) as e:
-            last_error = e
-            if attempt < max_retries - 1:
-                wait_time = retry_delay * (2 ** attempt)  # Exponential backoff
-                print(f"   Attempt {attempt + 1}/{max_retries} failed for {year}: {e}")
-                print(f"   Retrying in {wait_time}s...")
-                time.sleep(wait_time)
-            else:
-                # Last attempt - try without SSL verification
-                print(f"   ⚠ All {max_retries} attempts failed with SSL verification")
-                print(f"   Final attempt without SSL verification...")
-                try:
-                    ssl_context_unverified = ssl.create_default_context()
-                    ssl_context_unverified.check_hostname = False
-                    ssl_context_unverified.verify_mode = ssl.CERT_NONE
-                    with urllib.request.urlopen(req, context=ssl_context_unverified, timeout=30) as response:
-                        content = response.read().decode('utf-8')
-                        return pd.read_csv(StringIO(content))
-                except Exception as fallback_error:
-                    print(f"   ✗ Fallback also failed: {fallback_error}")
-                    raise
-
-        except Exception as e:
-            print(f"   ✗ Unexpected error fetching {year}: {e}")
-            raise
-
-    # If we get here, all retries failed
-    raise last_error if last_error else RuntimeError(f"Failed to fetch data for {year}")
+import config
 
 
 def main():
@@ -95,7 +24,7 @@ def main():
 
     # 1. Load real historical games
     print("\n1. Loading real historical games...")
-    games_path = RAW_DATA_DIR / 'games' / 'historical_games_2019_2025.csv'
+    games_path = config.HISTORICAL_GAMES_FILE
 
     # Validate file exists
     if not games_path.exists():
@@ -119,19 +48,13 @@ def main():
 
     # 2. Initialize Elo and process games chronologically
     print("\n2. Processing games chronologically through Elo system...")
-    elo = EloRatingSystem(k_factor=38, hca=4.0, carryover=0.64)
+    elo = EloRatingSystem(
+        k_factor=config.ELO_CONFIG['k_factor'],
+        hca=config.ELO_CONFIG['home_court_advantage'],
+        carryover=config.ELO_CONFIG['season_carryover']
+    )
 
-    conferences = {
-        'ACC': ['Duke', 'North Carolina', 'NC State', 'Virginia', 'Virginia Tech',
-               'Clemson', 'Florida State', 'Miami', 'Pitt', 'Syracuse', 'Louisville',
-               'Wake Forest', 'Georgia Tech', 'Boston College', 'Notre Dame',
-               'California', 'Stanford', 'SMU'],
-        'SEC': ['Kentucky', 'Tennessee', 'Alabama', 'Auburn', 'Florida', 'Texas A&M'],
-        'Big Ten': ['Purdue', 'Michigan', 'Michigan State', 'Ohio State', 'Illinois'],
-        'Big 12': ['Houston', 'Kansas', 'Baylor', 'Iowa State', 'BYU'],
-        'Big East': ['UConn', 'Creighton', 'Marquette', 'Villanova', 'Xavier'],
-    }
-    elo.load_conference_mappings(conferences)
+    elo.load_conference_mappings(config.CONFERENCE_MAPPINGS)
 
     elo_snapshots = elo.process_games(
         games,
@@ -150,7 +73,7 @@ def main():
     # 3. Load efficiency stats
     print("\n3. Loading team efficiency stats from Barttorvik...")
     all_stats = []
-    for year in [2020, 2021, 2022, 2023, 2024, 2025]:
+    for year in config.TRAINING_YEARS:
         df = fetch_barttorvik_year(year)
         df['season'] = year
         all_stats.append(df[['team', 'adjoe', 'adjde', 'season']])
@@ -199,9 +122,13 @@ def main():
 
     # Updated with tuned hyperparameters (8.9% improvement: 5.459 -> 4.972 MAE)
     model = ImprovedSpreadModel(
-        ridge_alpha=1.0,
-        lgbm_params={'n_estimators': 100, 'max_depth': 8, 'learning_rate': 0.1},
-        weights=(0.3, 0.7),
+        ridge_alpha=config.MODEL_CONFIG['ridge_alpha'],
+        lgbm_params={
+            'n_estimators': config.MODEL_CONFIG['n_estimators'],
+            'max_depth': config.MODEL_CONFIG['max_depth'],
+            'learning_rate': config.MODEL_CONFIG['learning_rate']
+        },
+        weights=(config.MODEL_CONFIG['ridge_weight'], config.MODEL_CONFIG['lgbm_weight']),
         use_lgbm=True
     )
 
@@ -209,8 +136,8 @@ def main():
     print("   ✓ Model trained!")
 
     # 6. Cross-validation
-    print("\n6. Running 5-fold time-series cross-validation...")
-    tscv = TimeSeriesSplit(n_splits=5)
+    print(f"\n6. Running {config.CV_CONFIG['n_splits']}-fold time-series cross-validation...")
+    tscv = TimeSeriesSplit(n_splits=config.CV_CONFIG['n_splits'])
     cv_results = {'ridge': [], 'ensemble': []}
 
     for fold, (train_idx, val_idx) in enumerate(tscv.split(X)):
@@ -218,8 +145,12 @@ def main():
         y_train, y_val = y.iloc[train_idx], y.iloc[val_idx]
 
         fold_model = ImprovedSpreadModel(
-            lgbm_params={'n_estimators': 100, 'max_depth': 8, 'learning_rate': 0.1},
-            weights=(0.3, 0.7)
+            lgbm_params={
+                'n_estimators': config.MODEL_CONFIG['n_estimators'],
+                'max_depth': config.MODEL_CONFIG['max_depth'],
+                'learning_rate': config.MODEL_CONFIG['learning_rate']
+            },
+            weights=(config.MODEL_CONFIG['ridge_weight'], config.MODEL_CONFIG['lgbm_weight'])
         )
         fold_model.fit(X_train, y_train)
 
@@ -243,9 +174,9 @@ def main():
     print(f"   Ensemble CV MAE: {ensemble_mean:.3f} ± {ensemble_std:.3f}")
 
     # 7. Generate 2026 predictions
-    print("\n7. Generating 2026 predictions...")
-    team_stats_2026 = pd.read_csv(PROCESSED_DATA_DIR / 'team_stats_2025_26.csv')
-    template = pd.read_csv(PROJECT_ROOT / 'tsa_pt_spread_template_2026 - Sheet1.csv')
+    print(f"\n7. Generating {config.PREDICTION_YEAR} predictions...")
+    team_stats_2026 = pd.read_csv(config.PROCESSED_DATA_DIR / 'team_stats_2025_26.csv')
+    template = pd.read_csv(config.PROJECT_ROOT / config.SUBMISSION_TEMPLATE)
     template = template.dropna(subset=['Home', 'Away'])
 
     team_dict = team_stats_2026.set_index('team').to_dict('index')
@@ -298,17 +229,14 @@ def main():
     submission['team_member'] = ''
     submission['team_email'] = ''
 
-    submission.loc[submission.index[0], 'team_name'] = 'CMMT'
-    submission.loc[submission.index[0], 'team_member'] = 'Caleb Han'
-    submission.loc[submission.index[0], 'team_email'] = 'calebhan@unc.edu'
-    submission.loc[submission.index[1], 'team_member'] = 'Mason Mines'
-    submission.loc[submission.index[1], 'team_email'] = 'mmines@unc.edu'
-    submission.loc[submission.index[2], 'team_member'] = 'Mason Wang'
-    submission.loc[submission.index[2], 'team_email'] = 'masonw@unc.edu'
-    submission.loc[submission.index[3], 'team_member'] = 'Tony Wang'
-    submission.loc[submission.index[3], 'team_email'] = 'tonyw@unc.edu'
+    # Add team info from config
+    for i, member in enumerate(config.TEAM_INFO['members'][:len(submission)]):
+        if i == 0:
+            submission.loc[submission.index[i], 'team_name'] = config.TEAM_INFO['team_name']
+        submission.loc[submission.index[i], 'team_member'] = member['name']
+        submission.loc[submission.index[i], 'team_email'] = member['email']
 
-    main_path = PREDICTIONS_DIR / 'tsa_pt_spread_CMMT_2026.csv'
+    main_path = config.PREDICTION_OUTPUT_FILE
     # Ensure directory exists
     main_path.parent.mkdir(parents=True, exist_ok=True)
     submission.to_csv(main_path, index=False)
@@ -326,10 +254,10 @@ def main():
         explainer = ModelExplainer(model, X_sample)
 
         # Ensure outputs directory exists
-        OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
+        config.OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 
         # Generate summary plot
-        explainer.summary_plot(X_sample, save_path=str(OUTPUTS_DIR / 'shap_summary.png'))
+        explainer.summary_plot(X_sample, save_path=str(config.OUTPUTS_DIR / 'shap_summary.png'))
 
         print("   ✓ Model interpretability analysis complete")
 

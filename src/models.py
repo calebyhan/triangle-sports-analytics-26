@@ -10,7 +10,9 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import TimeSeriesSplit, cross_val_score
+from sklearn.base import clone
 import warnings
+import copy
 
 # Optional imports for advanced models
 try:
@@ -665,8 +667,13 @@ def cross_validate_model(
         X_train, X_val = X.iloc[train_idx], X.iloc[val_idx]
         y_train, y_val = y.iloc[train_idx], y.iloc[val_idx]
 
-        # Clone and fit model
-        model_clone = type(model)() if hasattr(model, '__class__') else model
+        # Clone model - try sklearn clone first, fall back to deepcopy
+        try:
+            model_clone = clone(model)
+        except (TypeError, AttributeError):
+            # For models without get_params/set_params, use deepcopy
+            model_clone = copy.deepcopy(model)
+
         model_clone.fit(X_train, y_train)
 
         # Predict

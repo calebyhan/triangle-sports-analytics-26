@@ -12,65 +12,10 @@ from pathlib import Path
 
 from elo import EloRatingSystem
 from models import ImprovedSpreadModel
+from utils import fetch_barttorvik_year
 from sklearn.model_selection import TimeSeriesSplit
-import ssl
-import urllib.request
-from io import StringIO
 from itertools import product
-from urllib.error import URLError, HTTPError
-import certifi
-import time
-
-# Project paths
-PROJECT_ROOT = Path(__file__).parent.parent
-DATA_DIR = PROJECT_ROOT / "data"
-RAW_DATA_DIR = DATA_DIR / "raw"
-OUTPUTS_DIR = PROJECT_ROOT / "outputs"
-
-
-def fetch_barttorvik_year(year: int, max_retries: int = 3, retry_delay: float = 1.0) -> pd.DataFrame:
-    """
-    Fetch team efficiency stats from Barttorvik with proper SSL verification and retry logic
-
-    Args:
-        year: Season year to fetch
-        max_retries: Maximum number of retry attempts
-        retry_delay: Initial delay between retries (doubles each retry)
-
-    Returns:
-        DataFrame with team stats
-    """
-    ssl_context = ssl.create_default_context(cafile=certifi.where())
-    url = f"https://barttorvik.com/{year}_team_results.csv"
-    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-
-    last_error = None
-    for attempt in range(max_retries):
-        try:
-            with urllib.request.urlopen(req, context=ssl_context, timeout=30) as response:
-                content = response.read().decode('utf-8')
-                return pd.read_csv(StringIO(content))
-        except (URLError, HTTPError, ssl.SSLError) as e:
-            last_error = e
-            if attempt < max_retries - 1:
-                wait_time = retry_delay * (2 ** attempt)
-                print(f"   Attempt {attempt + 1}/{max_retries} failed for {year}: {e}")
-                print(f"   Retrying in {wait_time}s...")
-                time.sleep(wait_time)
-            else:
-                print(f"   ⚠ All attempts failed, trying without SSL verification...")
-                try:
-                    ssl_context_unverified = ssl.create_default_context()
-                    ssl_context_unverified.check_hostname = False
-                    ssl_context_unverified.verify_mode = ssl.CERT_NONE
-                    with urllib.request.urlopen(req, context=ssl_context_unverified, timeout=30) as response:
-                        content = response.read().decode('utf-8')
-                        return pd.read_csv(StringIO(content))
-                except Exception as fallback_error:
-                    print(f"   ✗ Fallback failed: {fallback_error}")
-                    raise
-
-    raise last_error if last_error else RuntimeError(f"Failed to fetch data for {year}")
+import config
 
 
 def load_training_data():

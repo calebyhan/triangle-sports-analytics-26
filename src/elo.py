@@ -16,6 +16,10 @@ from datetime import datetime
 import json
 import os
 from pathlib import Path
+import logging
+
+# Set up logger
+logger = logging.getLogger(__name__)
 
 
 class EloRatingSystem:
@@ -356,7 +360,7 @@ class EloRatingSystem:
             if season_col and season_col in row:
                 season = row[season_col]
                 if current_season is not None and season != current_season:
-                    print(f"Season change: {current_season} -> {season}")
+                    logger.info(f"Season change: {current_season} -> {season}")
                     self.season_reset(season)
                 current_season = season
 

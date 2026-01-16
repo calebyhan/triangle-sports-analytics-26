@@ -2,11 +2,47 @@
 Feature Engineering Module for Triangle Sports Analytics
 Creates features for point spread prediction models
 
-Enhanced with:
+⚠️ IMPORTANT - FEATURE USAGE SUMMARY ⚠️
+
+Based on feature experiments (outputs/feature_experiments_results.csv), the project
+currently uses the BASELINE 11-FEATURE SET because it performs best:
+
+✓ BASELINE FEATURES (11 features) - MAE: 5.0012 - CURRENTLY USED
+  1. home_adj_oe       - Home team adjusted offensive efficiency
+  2. home_adj_de       - Home team adjusted defensive efficiency
+  3. home_adj_em       - Home team adjusted efficiency margin
+  4. away_adj_oe       - Away team adjusted offensive efficiency
+  5. away_adj_de       - Away team adjusted defensive efficiency
+  6. away_adj_em       - Away team adjusted efficiency margin
+  7. eff_diff          - Efficiency differential (home - away)
+  8. home_elo_before   - Home team Elo rating before game
+  9. away_elo_before   - Away team Elo rating before game
+  10. elo_diff         - Elo differential (home - away)
+  11. predicted_spread - Elo-based spread prediction
+
+✗ FOUR FACTORS (additional 8 features) - MAE: 5.0172 - NOT USED (worse by 0.016)
+  - Adds: EFG%, TOV%, ORB%, FT Rate for both teams
+  - Performance: DECREASES accuracy
+
+✗ TEMPORAL FEATURES (additional 5 features) - MAE: 5.0253 - NOT USED (worse by 0.024)
+  - Adds: Recent form, win streaks, days of rest
+  - Performance: DECREASES accuracy
+
+✗ ALL FEATURES (24 features) - MAE: 4.9947 - NOT USED (marginal improvement)
+  - Only 0.0065 better than baseline (0.13% improvement)
+  - Risk of overfitting on 8,850 samples
+  - Adds complexity without meaningful benefit
+
+CONCLUSION: This module contains ~800 lines of code for feature engineering,
+but the production model only uses the simple 11-feature baseline set defined
+in config.BASELINE_FEATURES. The additional features (Four Factors, temporal)
+are kept for reference but should be considered deprecated.
+
+Enhanced features available but not used:
 - Dean Oliver's Four Factors
 - Temporal/momentum features
 - Multi-source ensemble ratings
-- Elo integration
+- Elo integration (only basic Elo diff and predicted_spread used)
 """
 
 import pandas as pd
