@@ -4,7 +4,7 @@ Logging configuration for Triangle Sports Analytics project.
 import logging
 import sys
 from pathlib import Path
-import config
+from . import config
 
 
 def setup_logger(name: str, level: str = None) -> logging.Logger:

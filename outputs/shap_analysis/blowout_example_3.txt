@@ -1,0 +1,20 @@
+Predicted Point Spread: 40.24
+Actual Point Spread: 48.00
+Prediction Error: 7.76
+
+Top 5 Contributing Features:
+
+11. predicted_spread = 9.62
+   → increases spread by 24.70 points
+
+10. elo_diff = 60.32
+   → increases spread by 9.98 points
+
+9. away_elo_before = 1500.00
+   → increases spread by 7.41 points
+
+17. win_pct_differential = -0.10
+   → increases spread by 1.37 points
+
+13. max_run_diff_differential = 51.00
+   → increases spread by 1.13 points

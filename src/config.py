@@ -135,19 +135,19 @@ TEAM_INFO = {
     'members': [
         {
             'name': 'Caleb Han',
-            'email': 'caleb.han@duke.edu',
+            'email': 'calebhan@unc.edu',
         },
         {
             'name': 'Mason Mines',
-            'email': 'mason.mines@duke.edu',
+            'email': 'mmines@unc.edu',
         },
         {
             'name': 'Mason Wang',
-            'email': 'mason.wang@duke.edu',
+            'email': 'mywang@unc.edu',
         },
         {
             'name': 'Tony Wang',
-            'email': 'tony.wang@duke.edu',
+            'email': 'anwang@unc.edu',
         },
     ],
 }

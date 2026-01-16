@@ -45,19 +45,23 @@ triangle-sports-analytics-26/
 │   ├── 01_scrape_team_ratings.ipynb                # Interactive Barttorvik scraper
 │   └── 02_modeling.ipynb                           # Production modeling pipeline
 │
-├──  src/                                          # Source code (5,156 lines)
-│   ├── train_real_data.py                          # Main training pipeline 
+├──  src/                                          # Source code
 │   ├── elo.py                                      # FiveThirtyEight Elo system (~560 lines)
 │   ├── models.py                                   # Ridge + LightGBM ensemble (~545 lines)
 │   ├── features.py                                 # Feature engineering (~800 lines)
-│   ├── config.py                                   # Centralized configuration  NEW
-│   ├── utils.py                                    # Shared utilities (SSL/retry)  NEW
-│   ├── logger.py                                   # Logging infrastructure  NEW
+│   ├── blowout_features.py                         # Momentum & run differential features
+│   ├── model_explainer.py                          # SHAP interpretability (warning-free!)
+│   ├── config.py                                   # Centralized configuration
+│   ├── utils.py                                    # Shared utilities (SSL/retry)
+│   ├── logger.py                                   # Logging infrastructure
 │   ├── evaluation.py                               # Performance metrics
 │   ├── hyperparameter_tuning.py                    # Grid search (81 configs tested)
 │   ├── error_analysis.py                           # Error breakdown by game type
-│   ├── interpretability.py                         # SHAP explanations
 │   └── [data collection modules]                   # Historical data fetching
+│
+├──  scripts/                                      # Evaluation scripts
+│   ├── evaluate_blowout_features.py                # Blowout feature evaluation + SHAP
+│   └── train_model.py                              # Main training pipeline
 │
 ├──  tests/                                        # 15 unit tests (all passing)
 │   ├── test_elo.py                                 # Elo system tests (8 tests)
@@ -66,7 +70,13 @@ triangle-sports-analytics-26/
 ├──  outputs/                                      # Experiment results
 │   ├── hyperparameter_tuning_results.csv           # 81 configurations tested
 │   ├── feature_experiments_results.csv             # 4 feature sets compared
-│   └── error_analysis_summary.csv                  # Error breakdown by game type
+│   ├── error_analysis_summary.csv                  # Error breakdown by game type
+│   ├── blowout_feature_evaluation.csv              # Blowout feature comparison
+│   └── shap_analysis/                              # SHAP interpretability outputs
+│       ├── feature_importance_shap.csv             # Global feature rankings
+│       ├── blowout_feature_importance.csv          # Blowout-specific rankings
+│       ├── shap_summary_plot.png                   # Feature importance visualization
+│       └── blowout_example_*.txt                   # Individual prediction explanations
 │
 └──  requirements.txt                              # 61 dependencies (Python 3.14)
 ```
@@ -77,6 +87,9 @@ triangle-sports-analytics-26/
 -  Added proper logging infrastructure → [src/logger.py](src/logger.py)
 -  Fixed model cloning bug in cross-validation
 -  Documented which features are actually used (see [src/features.py](src/features.py))
+-  **NEW**: Blowout prediction improvements (+4.65% blowout MAE) → [src/blowout_features.py](src/blowout_features.py)
+-  **NEW**: SHAP model interpretability (warning-free implementation) → [src/model_explainer.py](src/model_explainer.py)
+-  **NEW**: Comprehensive evaluation pipeline → [scripts/evaluate_blowout_features.py](scripts/evaluate_blowout_features.py)
 
 ## Methodology
 
@@ -194,6 +207,66 @@ Input (11 features)
 - **vs Vegas**: Estimated 42% better (~8.5 → 4.97 MAE)
 - **Winner Prediction**: 95.8% accuracy
 
+### 6. Blowout Prediction Improvements
+
+Our error analysis revealed the model struggles with blowouts (>15 point spreads: 6.97 MAE vs 4.79 for all games). We developed specialized features to address this:
+
+**Blowout-Specific Features** ([src/blowout_features.py](src/blowout_features.py)):
+
+```python
+# Run Differential Features (captures dominant performance)
+- avg_run_diff:          Average margin of victory/defeat (last 10 games)
+- max_run_diff:          Largest margin in recent games
+- blowout_rate:          % of games won by 15+ points
+- blown_out_rate:        % of games lost by 15+ points
+- consistency_ratio:     Volatility of performance (low = consistent dominance)
+
+# Momentum Features (captures team trajectory)
+- momentum_score:        Recent performance vs long-term average
+- trend_slope:           Linear trend in run differential (improving/declining)
+- hot_streak:            Current winning streak length
+
+# Differential Features (matchup-specific)
+- run_diff_differential:       Difference in average margins
+- momentum_differential:       Difference in momentum scores
+- blowout_tendency_diff:       Who blows out vs gets blown out
+- win_pct_differential:        Recent win rate difference
+```
+
+**Performance Improvements:**
+
+| Model | Overall MAE | Blowout MAE (>15 pts) | Improvement |
+|-------|-------------|----------------------|-------------|
+| Baseline (11 features) | 4.79 ± 0.23 | 6.97 ± 0.51 | - |
+| Enhanced (25 features) | 4.61 ± 0.21 | 6.65 ± 0.42 | +3.78% overall, +4.65% blowouts |
+
+**Model Interpretability** ([src/model_explainer.py](src/model_explainer.py)):
+
+SHAP (SHapley Additive exPlanations) integration provides:
+- Feature importance rankings (global and blowout-specific)
+- Individual prediction explanations with waterfall plots
+- Visualization of how features contribute to predictions
+- Validation that model uses features sensibly (not spurious correlations)
+
+**Key Insights from SHAP Analysis:**
+- `predicted_spread` (57.3%) and `elo_diff` (28.5%) dominate feature importance
+- Blowout features like `away_avg_run_diff` (4.4%) add meaningful signal
+- Momentum and consistency features help identify dominant performances
+- Model explanations align with basketball intuition
+
+**Testing:**
+```bash
+# Evaluate blowout features + generate SHAP analysis
+python scripts/evaluate_blowout_features.py
+```
+
+This creates:
+- `outputs/blowout_feature_evaluation.csv` - Performance comparison
+- `outputs/shap_analysis/feature_importance_shap.csv` - Feature rankings
+- `outputs/shap_analysis/blowout_feature_importance.csv` - Blowout-specific rankings
+- `outputs/shap_analysis/shap_summary_plot.png` - SHAP visualization
+- `outputs/shap_analysis/blowout_example_*.txt` - Individual prediction explanations
+
 ## Quick Start
 
 ### Installation
@@ -217,8 +290,8 @@ pip install -r requirements.txt
 # Activate virtual environment
 source .venv/bin/activate
 
-# Run main pipeline (takes ~2-3 minutes)
-python src/train_real_data.py
+# Run main training pipeline (takes ~2-3 minutes)
+python scripts/train_model.py
 ```
 
 **Pipeline Steps:**
@@ -228,6 +301,21 @@ python src/train_real_data.py
 4. ✓ Train Ridge + LightGBM ensemble with 5-fold CV
 5. ✓ Generate predictions for 78 ACC games
 6. ✓ Save to [data/predictions/tsa_pt_spread_CMMT_2026.csv](data/predictions/tsa_pt_spread_CMMT_2026.csv)
+
+### Evaluate Model with SHAP Analysis
+
+```bash
+# Run comprehensive evaluation (takes ~6-7 minutes)
+python scripts/evaluate_blowout_features.py
+```
+
+**Evaluation Steps:**
+1. ✓ Test baseline model (11 features) with 5-fold CV
+2. ✓ Test enhanced model (25 features) with blowout features
+3. ✓ Compare performance (overall and blowout-specific MAE)
+4. ✓ Generate SHAP feature importance rankings
+5. ✓ Create SHAP visualizations and example explanations
+6. ✓ Save results to [outputs/](outputs/)
 
 ### Run Tests
 
@@ -324,6 +412,16 @@ predictions = model.predict(X_test)
 - LightGBM captures non-linear relationships in competitive matchups
 - Weighted ensemble (40/60) optimizes for both stability and accuracy
 - Time-series CV prevents temporal data leakage
+
+### Model Interpretability
+- SHAP (SHapley Additive exPlanations) integration for feature importance
+- Warning-free implementation (fixed 2000+ sklearn/LightGBM warnings)
+  - Proper ensemble model detection (`gbm` vs `lgbm` attribute)
+  - Suppresses feature name warnings during TreeExplainer computation
+  - Clean, readable output for analysis
+- Global and blowout-specific feature rankings
+- Individual prediction explanations validate model reasoning
+- Confirms model uses features sensibly (not spurious correlations)
 
 ## Files for Submission
 

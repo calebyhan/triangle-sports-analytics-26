@@ -489,12 +489,17 @@ class ImprovedSpreadModel:
         self.is_fitted = True
         return self
 
-    def predict(self, X_test: pd.DataFrame) -> np.ndarray:
-        """Make ensemble predictions"""
+    def predict(self, X_test) -> np.ndarray:
+        """Make ensemble predictions (accepts DataFrame or numpy array)"""
         if not self.is_fitted:
             raise ValueError("Model not fitted yet")
 
-        X_subset = X_test[self.feature_names]
+        # Handle both DataFrame and numpy array inputs
+        if isinstance(X_test, pd.DataFrame):
+            X_subset = X_test[self.feature_names]
+        else:
+            # Assume numpy array with correct feature order
+            X_subset = X_test
 
         # Ridge prediction (needs scaling)
         X_scaled = self.scaler.transform(X_subset)

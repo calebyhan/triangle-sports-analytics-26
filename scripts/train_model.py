@@ -3,18 +3,21 @@ Train model on real historical game data
 """
 
 import sys
-import pandas as pd
-import numpy as np
-from datetime import datetime
-import warnings
-warnings.filterwarnings('ignore')
 from pathlib import Path
 
-from elo import EloRatingSystem
-from models import ImprovedSpreadModel
-from utils import fetch_barttorvik_year
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+import pandas as pd
+import numpy as np
+import warnings
+warnings.filterwarnings('ignore')
+
+from src.elo import EloRatingSystem
+from src.models import ImprovedSpreadModel
+from src.utils import fetch_barttorvik_year
 from sklearn.model_selection import TimeSeriesSplit
-import config
+from src import config
 
 
 def main():
@@ -245,7 +248,7 @@ def main():
     # 9. Generate SHAP explanations (optional)
     try:
         import shap
-        from interpretability import ModelExplainer
+        from src.model_explainer import ModelExplainer
 
         print("\n9. Generating model interpretability report...")
         # Sample background data for SHAP
