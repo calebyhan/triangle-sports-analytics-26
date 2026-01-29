@@ -169,6 +169,66 @@ SUBMISSION_COLUMNS = [
 ]
 
 # ============================================================================
+# DATA SOURCE CONFIGURATION
+# ============================================================================
+
+# Data source directories (organized by source)
+ESPN_DATA_DIR = RAW_DATA_DIR / "espn"
+HASLAMETRICS_DATA_DIR = RAW_DATA_DIR / "haslametrics"
+CBBPY_DATA_DIR = RAW_DATA_DIR / "cbbpy"
+CACHE_DIR = DATA_DIR / "cache"
+
+# ESPN API Configuration
+ESPN_CONFIG = {
+    'enabled': True,  # ✅ Working - team list available
+    'base_url': 'https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball',
+    'rate_limit': 100,  # requests per minute
+    'cache_ttl': 3600,  # cache time-to-live in seconds (1 hour)
+    'timeout': 10,  # request timeout in seconds
+    'features': ['team_list', 'scoreboard'],  # Note: standings/BPI require web scraping
+}
+
+# Haslametrics Configuration
+HASLAMETRICS_CONFIG = {
+    'enabled': True,  # ✅ Working with Selenium for JavaScript rendering
+    'base_url': 'https://www.haslametrics.com',
+    'rate_limit': 30,  # requests per minute
+    'cache_ttl': 86400,  # 24 hours
+    'timeout': 15,
+    'features': ['team_ratings', 'offensive_defensive_stats'],
+    'note': 'Uses Selenium + ChromeDriver for JavaScript-rendered tables',
+}
+
+# CBBpy Configuration (Enhanced)
+CBBPY_CONFIG = {
+    'enabled': True,  # ✅ Patched locally - fixed NCAA.com API changes
+    'rate_limit': 20,  # requests per minute (be respectful of NCAA.com)
+    'cache_ttl': 3600,  # 1 hour
+    'timeout': 30,
+    'features': ['play_by_play', 'box_scores', 'player_stats', 'game_metadata'],
+    'note': 'Patched .venv/lib/.../cbbpy/utils/cbbpy_utils.py for missing fields',
+}
+
+# NCAA API Configuration (Optional)
+NCAA_API_CONFIG = {
+    'enabled': False,  # Optional - self-hosted recommended
+    'base_url': 'https://ncaa-api.henrygd.me',  # Public demo (rate limited)
+    'rate_limit': 5,  # Public demo limit: 5 req/sec
+    'cache_ttl': 3600,
+    'timeout': 10,
+    'features': ['scoreboard', 'team_stats', 'rankings'],
+}
+
+# Feature Flags (Enable/disable experimental features)
+FEATURE_FLAGS = {
+    'use_bpi_ratings': False,  # ESPN BPI ratings
+    'use_player_stats': False,  # Player-level statistics
+    'use_play_by_play': False,  # Play-by-play data for pace/tempo
+    'use_momentum_metrics': False,  # Haslametrics momentum features
+    'use_alternative_efficiency': False,  # Non-Barttorvik efficiency metrics
+}
+
+# ============================================================================
 # LOGGING CONFIGURATION
 # ============================================================================
 

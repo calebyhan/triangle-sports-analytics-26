@@ -27,6 +27,7 @@ share/python-wheels/
 MANIFEST
 .claude/*
 CLAUDE.md
+data/cache/*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
