@@ -3,7 +3,7 @@
 #SBATCH --output=logs/slurm/tsa_pipeline_%j.log
 #SBATCH --error=logs/slurm/tsa_pipeline_%j.err
 #SBATCH --time=0-06:00:00              # 6 hours for complete pipeline
-#SBATCH --partition=l40-gpu            # Use l40-gpu partition
+#SBATCH --partition=l40-gpu,a40-gpu    # Use l40-gpu partition
 #SBATCH --qos=gpu_access               # Required for l40-gpu partition
 #SBATCH --gres=gpu:1                   # 1 GPU (L40)
 #SBATCH --cpus-per-task=8
