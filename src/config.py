@@ -28,6 +28,14 @@ TRAINING_YEARS = [2020, 2021, 2022, 2023, 2024, 2025]
 # Current prediction year
 PREDICTION_YEAR = 2026
 
+# ACC Teams for 2025-26 season
+ACC_TEAMS = [
+    'Michigan', 'Duke', 'Virginia', 'Louisville', 'Clemson', 'NC State',
+    'North Carolina', 'SMU', 'Ohio State', 'Miami', 'Virginia Tech',
+    'California', 'Wake Forest', 'Syracuse', 'Baylor', 'Stanford',
+    'Notre Dame', 'Florida State', 'Pitt', 'Georgia Tech', 'Boston College'
+]
+
 # Template file for competition submission
 SUBMISSION_TEMPLATE = "tsa_pt_spread_template_2026 - Sheet1.csv"
 
@@ -156,6 +164,46 @@ TEAM_INFO = {
 COMPETITION_DEADLINE = "February 6, 2026"
 
 # ============================================================================
+# ENHANCED FEATURES CONFIGURATION
+# ============================================================================
+
+# Enhanced features to add to baseline (13 features)
+ENHANCED_FEATURES = [
+    # Momentum features (3)
+    'momentum_diff',           # Recent margin differential
+    'win_streak_diff',         # Current streak differential
+    'recent_win_pct_diff',     # Last 5 games win % differential
+
+    # Blowout tendency (4)
+    'run_diff_differential',   # Average margin differential
+    'blowout_tendency_diff',   # Blowout rate differential
+    'consistency_ratio',       # Consistency of dominance
+    'hot_streak_advantage',    # Winning streak advantage
+
+    # Player-based features (4)
+    'star_power_diff',         # Top 3 scorers PPG differential
+    'bench_depth_diff',        # Bench production differential
+    'offensive_balance_diff',  # Scoring distribution differential
+    'star_efficiency_diff',    # Star player TS% differential
+
+    # Team-specific HCA (2)
+    'home_team_hca',           # Home team's historical HCA
+    'away_team_hca',           # Away team's historical HCA
+]
+
+# Feature flags (enable/disable groups)
+ENHANCED_FEATURE_FLAGS = {
+    'use_momentum': True,
+    'use_blowout': True,
+    'use_player_features': True,
+    'use_team_hca': True,
+    'use_haslametrics': False,  # Only if historical data available
+}
+
+# Historical player data path
+HISTORICAL_PLAYER_DATA = PROCESSED_DATA_DIR / 'historical_player_box_scores_2020_2024.csv'
+
+# ============================================================================
 # OUTPUT FORMATTING
 # ============================================================================
 
@@ -167,6 +215,66 @@ SUBMISSION_COLUMNS = [
     'Date', 'Away', 'Home', 'pt_spread',
     'team_name', 'team_member', 'team_email'
 ]
+
+# ============================================================================
+# DATA SOURCE CONFIGURATION
+# ============================================================================
+
+# Data source directories (organized by source)
+ESPN_DATA_DIR = RAW_DATA_DIR / "espn"
+HASLAMETRICS_DATA_DIR = RAW_DATA_DIR / "haslametrics"
+CBBPY_DATA_DIR = RAW_DATA_DIR / "cbbpy"
+CACHE_DIR = DATA_DIR / "cache"
+
+# ESPN API Configuration
+ESPN_CONFIG = {
+    'enabled': True,  # ✅ Working - team list available
+    'base_url': 'https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball',
+    'rate_limit': 100,  # requests per minute
+    'cache_ttl': 3600,  # cache time-to-live in seconds (1 hour)
+    'timeout': 10,  # request timeout in seconds
+    'features': ['team_list', 'scoreboard'],  # Note: standings/BPI require web scraping
+}
+
+# Haslametrics Configuration
+HASLAMETRICS_CONFIG = {
+    'enabled': True,  # ✅ Working with Selenium for JavaScript rendering
+    'base_url': 'https://www.haslametrics.com',
+    'rate_limit': 30,  # requests per minute
+    'cache_ttl': 86400,  # 24 hours
+    'timeout': 15,
+    'features': ['team_ratings', 'offensive_defensive_stats'],
+    'note': 'Uses Selenium + ChromeDriver for JavaScript-rendered tables',
+}
+
+# CBBpy Configuration (Enhanced)
+CBBPY_CONFIG = {
+    'enabled': True,  # ✅ Patched locally - fixed NCAA.com API changes
+    'rate_limit': 20,  # requests per minute (be respectful of NCAA.com)
+    'cache_ttl': 3600,  # 1 hour
+    'timeout': 30,
+    'features': ['play_by_play', 'box_scores', 'player_stats', 'game_metadata'],
+    'note': 'Patched .venv/lib/.../cbbpy/utils/cbbpy_utils.py for missing fields',
+}
+
+# NCAA API Configuration (Optional)
+NCAA_API_CONFIG = {
+    'enabled': False,  # Optional - self-hosted recommended
+    'base_url': 'https://ncaa-api.henrygd.me',  # Public demo (rate limited)
+    'rate_limit': 5,  # Public demo limit: 5 req/sec
+    'cache_ttl': 3600,
+    'timeout': 10,
+    'features': ['scoreboard', 'team_stats', 'rankings'],
+}
+
+# Feature Flags (Enable/disable experimental features)
+FEATURE_FLAGS = {
+    'use_bpi_ratings': False,  # ESPN BPI ratings
+    'use_player_stats': False,  # Player-level statistics
+    'use_play_by_play': False,  # Play-by-play data for pace/tempo
+    'use_momentum_metrics': False,  # Haslametrics momentum features
+    'use_alternative_efficiency': False,  # Non-Barttorvik efficiency metrics
+}
 
 # ============================================================================
 # LOGGING CONFIGURATION

@@ -42,8 +42,9 @@ triangle-sports-analytics-26/
 │   └── predictions/tsa_pt_spread_CMMT_2026.csv     # Final submission (78 games)
 │
 ├──  notebooks/
-│   ├── 01_scrape_team_ratings.ipynb                # Interactive Barttorvik scraper
-│   └── 02_modeling.ipynb                           # Production modeling pipeline
+│   ├── 01_data.ipynb                               # Data collection (Barttorvik + optional sources)
+│   ├── 02_modeling.ipynb                           # Production modeling pipeline
+│   └── 03_holdout_validation.ipynb                 # Holdout validation analysis
 │
 ├──  src/                                          # Source code
 │   ├── elo.py                                      # FiveThirtyEight Elo system (~560 lines)
@@ -78,18 +79,22 @@ triangle-sports-analytics-26/
 │       ├── shap_summary_plot.png                   # Feature importance visualization
 │       └── blowout_example_*.txt                   # Individual prediction explanations
 │
-└──  requirements.txt                              # 61 dependencies (Python 3.14)
+├──  scripts/                                      # Utility scripts
+│   ├── evaluate_blowout_features.py                # Blowout feature evaluation
+│   ├── train_model.py                              # Main training pipeline
+│   └── patch_cbbpy_venv.py                         # CBBpy compatibility patches
+│
+└──  requirements.txt                              # Dependencies (Python 3.9+)
 ```
 
-**Recent Improvements** (Post-competition refactoring):
--  Eliminated 200+ lines of duplicated SSL/retry code → [src/utils.py](src/utils.py)
--  Centralized all configuration → [src/config.py](src/config.py)
--  Added proper logging infrastructure → [src/logger.py](src/logger.py)
--  Fixed model cloning bug in cross-validation
--  Documented which features are actually used (see [src/features.py](src/features.py))
--  **NEW**: Blowout prediction improvements (+4.65% blowout MAE) → [src/blowout_features.py](src/blowout_features.py)
--  **NEW**: SHAP model interpretability (warning-free implementation) → [src/model_explainer.py](src/model_explainer.py)
--  **NEW**: Comprehensive evaluation pipeline → [scripts/evaluate_blowout_features.py](scripts/evaluate_blowout_features.py)
+**Key Features**:
+-  Clean, consolidated data collection pipeline → [notebooks/01_data.ipynb](notebooks/01_data.ipynb)
+-  Centralized configuration → [src/config.py](src/config.py)
+-  Proper logging infrastructure → [src/logger.py](src/logger.py)
+-  Reusable utilities (SSL/retry logic) → [src/utils.py](src/utils.py)
+-  Blowout prediction improvements (+4.65% blowout MAE) → [src/blowout_features.py](src/blowout_features.py)
+-  SHAP model interpretability (warning-free) → [src/model_explainer.py](src/model_explainer.py)
+-  Comprehensive evaluation pipeline → [scripts/evaluate_blowout_features.py](scripts/evaluate_blowout_features.py)
 
 ## Methodology
 
@@ -329,8 +334,9 @@ pytest tests/ -v
 ### Interactive Development
 
 ```bash
-# Launch Jupyter for interactive exploration
-jupyter notebook notebooks/02_modeling.ipynb
+# Launch Jupyter for data collection and modeling
+jupyter notebook notebooks/01_data.ipynb  # Data collection
+jupyter notebook notebooks/02_modeling.ipynb  # Model training
 ```
 
 ### Programmatic Usage
@@ -449,8 +455,7 @@ predictions = model.predict(X_test)
 
 ## References
 
-- [lbenz730/NCAA_Hoops GitHub](https://github.com/lbenz730/NCAA_Hoops) - Historical game data
-- [Barttorvik.com](https://barttorvik.com) - NCAA Basketball efficiency ratings
+- [lbenz730/NCAA_Hoops GitHub](https://github.com/lbenz730/NCAA_Hoops) - Historical game data (33,746 games)
+- [Barttorvik.com](https://barttorvik.com) - NCAA Basketball efficiency ratings (primary data source)
 - [FiveThirtyEight Elo Methodology](https://fivethirtyeight.com/features/how-we-calculate-nba-elo-ratings/) - Elo rating system
 - [Silver Bulletin College Basketball Ratings](https://www.natesilver.net/p/2024-25-college-basketball-ratings) - Modern Elo implementation
-- [CBBpy Python Package](https://pypi.org/project/CBBpy/) - NCAA basketball data scraping

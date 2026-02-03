@@ -27,6 +27,13 @@ share/python-wheels/
 MANIFEST
 .claude/*
 CLAUDE.md
+data/cache/*
+writeup/*.aux
+writeup/*.out
+
+# Large data files (can be regenerated from scripts)
+data/processed/historical_player_box_scores_*.csv
+data/processed/enhanced_features_*.csv
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

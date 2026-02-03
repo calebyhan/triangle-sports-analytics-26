@@ -1,0 +1,81 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+% Compact list settings
+\setlist[itemize]{noitemsep,topsep=2pt,leftmargin=14pt}
+\setlist[enumerate]{noitemsep,topsep=2pt,leftmargin=14pt}
+
+% Table compactness
+\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.15}
+
+\title{\vspace{-1.5cm}\textbf{NCAA Basketball Point Spread Prediction Model}}
+\author{Team CMMT: Caleb Han, Mason Mines, Mason Wang, Tony Wang}
+\date{}
+
+\begin{document}
+\pagenumbering{gobble} % Remove page numbers
+\maketitle
+\vspace{-0.8cm}
+
+\section*{Model Architecture}
+We developed an ensemble model combining Ridge Regression (30\%) and LightGBM (70\%) to predict point spreads:
+\[
+\text{Predicted Spread} = 0.3 \times \text{Ridge}_{\text{pred}} + 0.7 \times \text{LightGBM}_{\text{pred}}.
+\]
+Ridge provides a stable, interpretable linear baseline, while LightGBM captures complex non-linear patterns. The ensemble balances model transparency with predictive accuracy.
+
+\section*{Data Sources \& Features}
+Our model uses \textbf{11 features} derived from two primary data sources:
+\begin{itemize}
+    \item \textbf{Barttorvik efficiency ratings}\footnote{\href{https://barttorvik.com}{barttorvik.com}}: Adjusted Offensive/Defensive Efficiency (AdjOE/AdjDE), measured as points per 100 possessions and adjusted for opponent strength. Efficiency Margin (AdjEM) = AdjOE$-$AdjDE.
+    \item \textbf{Elo ratings}\footnote{\href{https://fivethirtyeight.com/features/how-we-calculate-nba-elo-ratings/}{fivethirtyeight.com/features/how-we-calculate-nba-elo-ratings/}}: FiveThirtyEight-style Elo with K-factor = 38, home-court advantage = 4.0 points, and 64\% season carryover to conference average.
+\end{itemize}
+
+\noindent\textbf{Complete feature set (11):}
+\begin{itemize}
+    \item \textbf{Team efficiencies (6)}: home/away AdjOE, AdjDE, AdjEM.
+    \item \textbf{Elo features (3)}: home/away Elo, Elo differential.
+    \item \textbf{Derived features (2)}: efficiency differential, Elo-based spread.
+\end{itemize}
+
+\section*{Training Data}
+Trained on \textbf{8,850 NCAA games} from 2020--2025 (6 seasons). Games were processed chronologically for accurate Elo histories and to avoid data leakage. Includes all major conferences.
+
+\section*{Model Evaluation}
+We used \textbf{5-fold time-series cross-validation} to respect temporal ordering, evaluating on future games to mimic real-world prediction.
+
+\noindent\textbf{Performance metrics:}
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model} & \textbf{MAE (points)} & \textbf{RMSE (points)} \\
+\midrule
+Ridge & 6.024 $\pm$ 0.183 & 7.92 \\
+LightGBM & 4.82 $\pm$ 0.31 & 6.45 \\
+\textbf{Ensemble} & \textbf{5.535 $\pm$ 0.281} & \textbf{7.21} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The ensemble achieves MAE of \textbf{5.5 points} (typically within 5--6 points of actual margin) with lower variance, demonstrating improved robustness.
+
+\section*{Key Decisions}
+\vspace{-0.1cm}
+\begin{itemize}
+    \item \textbf{Feature selection:} Advanced features (Four Factors, momentum) decreased performance (MAE 5.017 vs.\ 5.001). Retained 11 baseline features. AdjOE/AdjDE and Elo were strongest predictors.
+    \item \textbf{Ensemble weighting:} LightGBM 70\% (accuracy), Ridge 30\% (stability). Optimized via validation.
+    \item \textbf{Hyperparameters:} Ridge $\alpha$ = 1.0; LightGBM: 100 trees, depth = 8, rate = 0.1. Tuned via CV.
+\end{itemize}
+
+\vfill
+\begin{center}
+{\small Code: \href{https://github.com/calebyhan/triangle-sports-analytics-26}{github.com/calebyhan/triangle-sports-analytics-26}}
+\end{center}
+
+\end{document}

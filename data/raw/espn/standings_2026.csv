@@ -1,0 +1,363 @@
+team,team_id,abbreviation,location
+Abilene Christian Wildcats,2000,ACU,Abilene Christian
+Air Force Falcons,2005,AF,Air Force
+Akron Zips,2006,AKR,Akron
+Alabama A&M Bulldogs,2010,AAMU,Alabama A&M
+Alabama Crimson Tide,333,ALA,Alabama
+Alabama State Hornets,2011,ALST,Alabama State
+Alcorn State Braves,2016,ALCN,Alcorn State
+American University Eagles,44,AMER,American University
+App State Mountaineers,2026,APP,App State
+Arizona State Sun Devils,9,ASU,Arizona State
+Arizona Wildcats,12,ARIZ,Arizona
+Arkansas Razorbacks,8,ARK,Arkansas
+Arkansas State Red Wolves,2032,ARST,Arkansas State
+Arkansas-Pine Bluff Golden Lions,2029,UAPB,Arkansas-Pine Bluff
+Army Black Knights,349,ARMY,Army
+Auburn Tigers,2,AUB,Auburn
+Austin Peay Governors,2046,APSU,Austin Peay
+BYU Cougars,252,BYU,BYU
+Ball State Cardinals,2050,BALL,Ball State
+Baylor Bears,239,BAY,Baylor
+Bellarmine Knights,91,BELL,Bellarmine
+Belmont Bruins,2057,BEL,Belmont
+Bethune-Cookman Wildcats,2065,BCU,Bethune-Cookman
+Binghamton Bearcats,2066,BING,Binghamton
+Boise State Broncos,68,BOIS,Boise State
+Boston College Eagles,103,BC,Boston College
+Boston University Terriers,104,BU,Boston University
+Bowling Green Falcons,189,BGSU,Bowling Green
+Bradley Braves,71,BRAD,Bradley
+Brown Bears,225,BRWN,Brown
+Bryant Bulldogs,2803,BRY,Bryant
+Bucknell Bison,2083,BUCK,Bucknell
+Buffalo Bulls,2084,BUF,Buffalo
+Butler Bulldogs,2086,BUT,Butler
+Cal Poly Mustangs,13,CP,Cal Poly
+Cal State Bakersfield Roadrunners,2934,CSUB,Cal State Bakersfield
+Cal State Fullerton Titans,2239,CSUF,Cal State Fullerton
+Cal State Northridge Matadors,2463,CSUN,Cal State Northridge
+California Baptist Lancers,2856,CBU,California Baptist
+California Golden Bears,25,CAL,California
+Campbell Fighting Camels,2097,CAM,Campbell
+Canisius Golden Griffins,2099,CAN,Canisius
+Central Arkansas Bears,2110,CARK,Central Arkansas
+Central Connecticut Blue Devils,2115,CCSU,Central Connecticut
+Central Michigan Chippewas,2117,CMU,Central Michigan
+Charleston Cougars,232,COFC,Charleston
+Charleston Southern Buccaneers,2127,CHSO,Charleston Southern
+Charlotte 49ers,2429,CLT,Charlotte
+Chattanooga Mocs,236,UTC,Chattanooga
+Chicago State Cougars,2130,CHST,Chicago State
+Cincinnati Bearcats,2132,CIN,Cincinnati
+Clemson Tigers,228,CLEM,Clemson
+Cleveland State Vikings,325,CLE,Cleveland State
+Coastal Carolina Chanticleers,324,CCU,Coastal Carolina
+Colgate Raiders,2142,COLG,Colgate
+Colorado Buffaloes,38,COLO,Colorado
+Colorado State Rams,36,CSU,Colorado State
+Columbia Lions,171,COLU,Columbia
+Coppin State Eagles,2154,COPP,Coppin State
+Cornell Big Red,172,COR,Cornell
+Creighton Bluejays,156,CREI,Creighton
+Dartmouth Big Green,159,DART,Dartmouth
+Davidson Wildcats,2166,DAV,Davidson
+Dayton Flyers,2168,DAY,Dayton
+DePaul Blue Demons,305,DEP,DePaul
+Delaware Blue Hens,48,DEL,Delaware
+Delaware State Hornets,2169,DSU,Delaware State
+Denver Pioneers,2172,DEN,Denver
+Detroit Mercy Titans,2174,DETM,Detroit Mercy
+Drake Bulldogs,2181,DRKE,Drake
+Drexel Dragons,2182,DREX,Drexel
+Duke Blue Devils,150,DUKE,Duke
+Duquesne Dukes,2184,DUQ,Duquesne
+East Carolina Pirates,151,ECU,East Carolina
+East Tennessee State Buccaneers,2193,ETSU,East Tennessee State
+East Texas A&M Lions,2837,ETAM,East Texas A&M
+Eastern Illinois Panthers,2197,EIU,Eastern Illinois
+Eastern Kentucky Colonels,2198,EKU,Eastern Kentucky
+Eastern Michigan Eagles,2199,EMU,Eastern Michigan
+Eastern Washington Eagles,331,EWU,Eastern Washington
+Elon Phoenix,2210,ELON,Elon
+Evansville Purple Aces,339,EVAN,Evansville
+Fairfield Stags,2217,FAIR,Fairfield
+Fairleigh Dickinson Knights,161,FDU,Fairleigh Dickinson
+Florida A&M Rattlers,50,FAMU,Florida A&M
+Florida Atlantic Owls,2226,FAU,Florida Atlantic
+Florida Gators,57,FLA,Florida
+Florida Gulf Coast Eagles,526,FGCU,Florida Gulf Coast
+Florida International Panthers,2229,FIU,Florida International
+Florida State Seminoles,52,FSU,Florida State
+Fordham Rams,2230,FOR,Fordham
+Fresno State Bulldogs,278,FRES,Fresno State
+Furman Paladins,231,FUR,Furman
+Gardner-Webb Runnin' Bulldogs,2241,GWEB,Gardner-Webb
+George Mason Patriots,2244,GMU,George Mason
+George Washington Revolutionaries,45,GW,George Washington
+Georgetown Hoyas,46,GTWN,Georgetown
+Georgia Bulldogs,61,UGA,Georgia
+Georgia Southern Eagles,290,GASO,Georgia Southern
+Georgia State Panthers,2247,GAST,Georgia State
+Georgia Tech Yellow Jackets,59,GT,Georgia Tech
+Gonzaga Bulldogs,2250,GONZ,Gonzaga
+Grambling Tigers,2755,GRAM,Grambling
+Grand Canyon Lopes,2253,GCU,Grand Canyon
+Green Bay Phoenix,2739,GB,Green Bay
+Hampton Pirates,2261,HAMP,Hampton
+Harvard Crimson,108,HARV,Harvard
+Hawai'i Rainbow Warriors,62,HAW,Hawai'i
+High Point Panthers,2272,HPU,High Point
+Hofstra Pride,2275,HOF,Hofstra
+Holy Cross Crusaders,107,HC,Holy Cross
+Houston Christian Huskies,2277,HCU,Houston Christian
+Houston Cougars,248,HOU,Houston
+Howard Bison,47,HOW,Howard
+IU Indianapolis Jaguars,85,IUIN,IU Indianapolis
+Idaho State Bengals,304,IDST,Idaho State
+Idaho Vandals,70,IDHO,Idaho
+Illinois Fighting Illini,356,ILL,Illinois
+Illinois State Redbirds,2287,ILST,Illinois State
+Incarnate Word Cardinals,2916,UIW,Incarnate Word
+Indiana Hoosiers,84,IU,Indiana
+Indiana State Sycamores,282,INST,Indiana State
+Iona Gaels,314,IONA,Iona
+Iowa Hawkeyes,2294,IOWA,Iowa
+Iowa State Cyclones,66,ISU,Iowa State
+Jackson State Tigers,2296,JKST,Jackson State
+Jacksonville Dolphins,294,JAX,Jacksonville
+Jacksonville State Gamecocks,55,JXST,Jacksonville State
+James Madison Dukes,256,JMU,James Madison
+Kansas City Roos,140,KC,Kansas City
+Kansas Jayhawks,2305,KU,Kansas
+Kansas State Wildcats,2306,KSU,Kansas State
+Kennesaw State Owls,338,KENN,Kennesaw State
+Kent State Golden Flashes,2309,KENT,Kent State
+Kentucky Wildcats,96,UK,Kentucky
+LSU Tigers,99,LSU,LSU
+La Salle Explorers,2325,LAS,La Salle
+Lafayette Leopards,322,LAF,Lafayette
+Lamar Cardinals,2320,LAM,Lamar
+Le Moyne Dolphins,2330,LEM,Le Moyne
+Lehigh Mountain Hawks,2329,LEH,Lehigh
+Liberty Flames,2335,LIB,Liberty
+Lipscomb Bisons,288,LIP,Lipscomb
+Little Rock Trojans,2031,LR,Little Rock
+Long Beach State Beach,299,LBSU,Long Beach State
+Long Island University Sharks,112358,LIU,Long Island University
+Longwood Lancers,2344,LONG,Longwood
+Louisiana Ragin' Cajuns,309,UL,Louisiana
+Louisiana Tech Bulldogs,2348,LT,Louisiana Tech
+Louisville Cardinals,97,LOU,Louisville
+Loyola Chicago Ramblers,2350,LUC,Loyola Chicago
+Loyola Maryland Greyhounds,2352,L-MD,Loyola Maryland
+Loyola Marymount Lions,2351,LMU,Loyola Marymount
+Maine Black Bears,311,ME,Maine
+Manhattan Jaspers,2363,MAN,Manhattan
+Marist Red Foxes,2368,MRST,Marist
+Marquette Golden Eagles,269,MARQ,Marquette
+Marshall Thundering Herd,276,MRSH,Marshall
+Maryland Eastern Shore Hawks,2379,UMES,Maryland Eastern Shore
+Maryland Terrapins,120,MD,Maryland
+Massachusetts Minutemen,113,MASS,Massachusetts
+McNeese Cowboys,2377,MCN,McNeese
+Memphis Tigers,235,MEM,Memphis
+Mercer Bears,2382,MER,Mercer
+Mercyhurst Lakers,2385,MERC,Mercyhurst
+Merrimack Warriors,2771,MRMK,Merrimack
+Miami (OH) RedHawks,193,M-OH,Miami (OH)
+Miami Hurricanes,2390,MIA,Miami
+Michigan State Spartans,127,MSU,Michigan State
+Michigan Wolverines,130,MICH,Michigan
+Middle Tennessee Blue Raiders,2393,MTSU,Middle Tennessee
+Milwaukee Panthers,270,MILW,Milwaukee
+Minnesota Golden Gophers,135,MINN,Minnesota
+Mississippi State Bulldogs,344,MSST,Mississippi State
+Mississippi Valley State Delta Devils,2400,MVSU,Mississippi Valley State
+Missouri State Bears,2623,MOST,Missouri State
+Missouri Tigers,142,MIZ,Missouri
+Monmouth Hawks,2405,MONM,Monmouth
+Montana Grizzlies,149,MONT,Montana
+Montana State Bobcats,147,MTST,Montana State
+Morehead State Eagles,2413,MORE,Morehead State
+Morgan State Bears,2415,MORG,Morgan State
+Mount St. Mary's Mountaineers,116,MSM,Mount St. Mary's
+Murray State Racers,93,MUR,Murray State
+NC State Wolfpack,152,NCSU,NC State
+NJIT Highlanders,2885,NJIT,NJIT
+Navy Midshipmen,2426,NAVY,Navy
+Nebraska Cornhuskers,158,NEB,Nebraska
+Nevada Wolf Pack,2440,NEV,Nevada
+New Hampshire Wildcats,160,UNH,New Hampshire
+New Haven Chargers,2441,NHVN,New Haven
+New Mexico Lobos,167,UNM,New Mexico
+New Mexico State Aggies,166,NMSU,New Mexico State
+New Orleans Privateers,2443,UNO,New Orleans
+Niagara Purple Eagles,315,NIA,Niagara
+Nicholls Colonels,2447,NICH,Nicholls
+Norfolk State Spartans,2450,NORF,Norfolk State
+North Alabama Lions,2453,UNA,North Alabama
+North Carolina A&T Aggies,2448,NCAT,North Carolina A&T
+North Carolina Central Eagles,2428,NCCU,North Carolina Central
+North Carolina Tar Heels,153,UNC,North Carolina
+North Dakota Fighting Hawks,155,UND,North Dakota
+North Dakota State Bison,2449,NDSU,North Dakota State
+North Florida Ospreys,2454,UNF,North Florida
+North Texas Mean Green,249,UNT,North Texas
+Northeastern Huskies,111,NE,Northeastern
+Northern Arizona Lumberjacks,2464,NAU,Northern Arizona
+Northern Colorado Bears,2458,UNCO,Northern Colorado
+Northern Illinois Huskies,2459,NIU,Northern Illinois
+Northern Iowa Panthers,2460,UNI,Northern Iowa
+Northern Kentucky Norse,94,NKU,Northern Kentucky
+Northwestern State Demons,2466,NWST,Northwestern State
+Northwestern Wildcats,77,NU,Northwestern
+Notre Dame Fighting Irish,87,ND,Notre Dame
+Oakland Golden Grizzlies,2473,OAK,Oakland
+Ohio Bobcats,195,OHIO,Ohio
+Ohio State Buckeyes,194,OSU,Ohio State
+Oklahoma Sooners,201,OU,Oklahoma
+Oklahoma State Cowboys,197,OKST,Oklahoma State
+Old Dominion Monarchs,295,ODU,Old Dominion
+Ole Miss Rebels,145,MISS,Ole Miss
+Omaha Mavericks,2437,OMA,Omaha
+Oral Roberts Golden Eagles,198,ORU,Oral Roberts
+Oregon Ducks,2483,ORE,Oregon
+Oregon State Beavers,204,ORST,Oregon State
+Pacific Tigers,279,PAC,Pacific
+Penn State Nittany Lions,213,PSU,Penn State
+Pennsylvania Quakers,219,PENN,Pennsylvania
+Pepperdine Waves,2492,PEPP,Pepperdine
+Pittsburgh Panthers,221,PITT,Pittsburgh
+Portland Pilots,2501,PORT,Portland
+Portland State Vikings,2502,PRST,Portland State
+Prairie View A&M Panthers,2504,PV,Prairie View A&M
+Presbyterian Blue Hose,2506,PRES,Presbyterian
+Princeton Tigers,163,PRIN,Princeton
+Providence Friars,2507,PROV,Providence
+Purdue Boilermakers,2509,PUR,Purdue
+Purdue Fort Wayne Mastodons,2870,PFW,Purdue Fort Wayne
+Quinnipiac Bobcats,2514,QUIN,Quinnipiac
+Radford Highlanders,2515,RAD,Radford
+Rhode Island Rams,227,URI,Rhode Island
+Rice Owls,242,RICE,Rice
+Richmond Spiders,257,RICH,Richmond
+Rider Broncs,2520,RID,Rider
+Robert Morris Colonials,2523,RMU,Robert Morris
+Rutgers Scarlet Knights,164,RUTG,Rutgers
+SE Louisiana Lions,2545,SELA,SE Louisiana
+SIU Edwardsville Cougars,2565,SIUE,SIU Edwardsville
+SMU Mustangs,2567,SMU,SMU
+Sacramento State Hornets,16,SAC,Sacramento State
+Sacred Heart Pioneers,2529,SHU,Sacred Heart
+Saint Francis Red Flash,2598,SFPA,Saint Francis
+Saint Joseph's Hawks,2603,JOES,Saint Joseph's
+Saint Louis Billikens,139,SLU,Saint Louis
+Saint Mary's Gaels,2608,SMC,Saint Mary's
+Saint Peter's Peacocks,2612,SPU,Saint Peter's
+Sam Houston Bearkats,2534,SHSU,Sam Houston
+Samford Bulldogs,2535,SAM,Samford
+San Diego State Aztecs,21,SDSU,San Diego State
+San Diego Toreros,301,USD,San Diego
+San Francisco Dons,2539,SF,San Francisco
+San José State Spartans,23,SJSU,San José State
+Santa Clara Broncos,2541,SCU,Santa Clara
+Seattle U Redhawks,2547,SEA,Seattle U
+Seton Hall Pirates,2550,HALL,Seton Hall
+Siena Saints,2561,SIE,Siena
+South Alabama Jaguars,6,USA,South Alabama
+South Carolina Gamecocks,2579,SC,South Carolina
+South Carolina State Bulldogs,2569,SCST,South Carolina State
+South Carolina Upstate Spartans,2908,UPST,South Carolina Upstate
+South Dakota Coyotes,233,SDAK,South Dakota
+South Dakota State Jackrabbits,2571,SDST,South Dakota State
+South Florida Bulls,58,USF,South Florida
+Southeast Missouri State Redhawks,2546,SEMO,Southeast Missouri State
+Southern Illinois Salukis,79,SIU,Southern Illinois
+Southern Jaguars,2582,SOU,Southern
+Southern Miss Golden Eagles,2572,USM,Southern Miss
+Southern Utah Thunderbirds,253,SUU,Southern Utah
+St. Bonaventure Bonnies,179,SBU,St. Bonaventure
+St. John's Red Storm,2599,SJU,St. John's
+St. Thomas-Minnesota Tommies,2900,STMN,St. Thomas-Minnesota
+Stanford Cardinal,24,STAN,Stanford
+Stephen F. Austin Lumberjacks,2617,SFA,Stephen F. Austin
+Stetson Hatters,56,STET,Stetson
+Stonehill Skyhawks,284,STO,Stonehill
+Stony Brook Seawolves,2619,STBK,Stony Brook
+Syracuse Orange,183,SYR,Syracuse
+TCU Horned Frogs,2628,TCU,TCU
+Tarleton State Texans,2627,TAR,Tarleton State
+Temple Owls,218,TEM,Temple
+Tennessee State Tigers,2634,TNST,Tennessee State
+Tennessee Tech Golden Eagles,2635,TNTC,Tennessee Tech
+Tennessee Volunteers,2633,TENN,Tennessee
+Texas A&M Aggies,245,TA&M,Texas A&M
+Texas A&M-Corpus Christi Islanders,357,AMCC,Texas A&M-Corpus Christi
+Texas Longhorns,251,TEX,Texas
+Texas Southern Tigers,2640,TXSO,Texas Southern
+Texas State Bobcats,326,TXST,Texas State
+Texas Tech Red Raiders,2641,TTU,Texas Tech
+The Citadel Bulldogs,2643,CIT,The Citadel
+Toledo Rockets,2649,TOL,Toledo
+Towson Tigers,119,TOW,Towson
+Troy Trojans,2653,TROY,Troy
+Tulane Green Wave,2655,TULN,Tulane
+Tulsa Golden Hurricane,202,TLSA,Tulsa
+UAB Blazers,5,UAB,UAB
+UAlbany Great Danes,399,UALB,UAlbany
+UC Davis Aggies,302,UCD,UC Davis
+UC Irvine Anteaters,300,UCI,UC Irvine
+UC Riverside Highlanders,27,UCR,UC Riverside
+UC San Diego Tritons,28,UCSD,UC San Diego
+UC Santa Barbara Gauchos,2540,UCSB,UC Santa Barbara
+UCF Knights,2116,UCF,UCF
+UCLA Bruins,26,UCLA,UCLA
+UConn Huskies,41,CONN,UConn
+UIC Flames,82,UIC,UIC
+UL Monroe Warhawks,2433,ULM,UL Monroe
+UMBC Retrievers,2378,UMBC,UMBC
+UMass Lowell River Hawks,2349,UML,UMass Lowell
+UNC Asheville Bulldogs,2427,UNCA,UNC Asheville
+UNC Greensboro Spartans,2430,UNCG,UNC Greensboro
+UNC Wilmington Seahawks,350,UNCW,UNC Wilmington
+UNLV Rebels,2439,UNLV,UNLV
+USC Trojans,30,USC,USC
+UT Arlington Mavericks,250,UTA,UT Arlington
+UT Martin Skyhawks,2630,UTM,UT Martin
+UT Rio Grande Valley Vaqueros,292,RGV,UT Rio Grande Valley
+UTEP Miners,2638,UTEP,UTEP
+UTSA Roadrunners,2636,UTSA,UTSA
+Utah State Aggies,328,USU,Utah State
+Utah Tech Trailblazers,3101,UTU,Utah Tech
+Utah Utes,254,UTAH,Utah
+Utah Valley Wolverines,3084,UVU,Utah Valley
+VCU Rams,2670,VCU,VCU
+VMI Keydets,2678,VMI,VMI
+Valparaiso Beacons,2674,VAL,Valparaiso
+Vanderbilt Commodores,238,VAN,Vanderbilt
+Vermont Catamounts,261,UVM,Vermont
+Villanova Wildcats,222,VILL,Villanova
+Virginia Cavaliers,258,UVA,Virginia
+Virginia Tech Hokies,259,VT,Virginia Tech
+Wagner Seahawks,2681,WAG,Wagner
+Wake Forest Demon Deacons,154,WAKE,Wake Forest
+Washington Huskies,264,WASH,Washington
+Washington State Cougars,265,WSU,Washington State
+Weber State Wildcats,2692,WEB,Weber State
+West Georgia Wolves,2698,WGA,West Georgia
+West Virginia Mountaineers,277,WVU,West Virginia
+Western Carolina Catamounts,2717,WCU,Western Carolina
+Western Illinois Leathernecks,2710,WIU,Western Illinois
+Western Kentucky Hilltoppers,98,WKU,Western Kentucky
+Western Michigan Broncos,2711,WMU,Western Michigan
+Wichita State Shockers,2724,WICH,Wichita State
+William & Mary Tribe,2729,W&M,William & Mary
+Winthrop Eagles,2737,WIN,Winthrop
+Wisconsin Badgers,275,WIS,Wisconsin
+Wofford Terriers,2747,WOF,Wofford
+Wright State Raiders,2750,WRST,Wright State
+Wyoming Cowboys,2751,WYO,Wyoming
+Xavier Musketeers,2752,XAV,Xavier
+Yale Bulldogs,43,YALE,Yale
+Youngstown State Penguins,2754,YSU,Youngstown State
