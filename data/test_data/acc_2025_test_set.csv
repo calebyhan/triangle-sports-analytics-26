@@ -1,0 +1,142 @@
+Date,Home,Away,home_score,away_score,actual_spread
+2024-12-07,Pittsburgh,Virginia Tech,64.0,59.0,5.0
+2024-12-07,Notre Dame,Syracuse,69.0,64.0,5.0
+2024-12-07,SMU,Virginia,63.0,51.0,12.0
+2024-12-07,California,Stanford,81.0,89.0,-8.0
+2024-12-07,Boston College,Wake Forest,66.0,72.0,-6.0
+2024-12-07,Georgia Tech,North Carolina,65.0,68.0,-3.0
+2024-12-08,Duke,Louisville,76.0,65.0,11.0
+2024-12-21,Boston College,SMU,77.0,103.0,-26.0
+2024-12-21,Clemson,Wake Forest,73.0,62.0,11.0
+2024-12-21,Florida St.,Louisville,76.0,90.0,-14.0
+2024-12-21,Duke,Georgia Tech,82.0,56.0,26.0
+2024-12-31,Syracuse,Wake Forest,71.0,81.0,-10.0
+2024-12-31,Georgia Tech,Notre Dame,86.0,75.0,11.0
+2024-12-31,Duke,Virginia Tech,88.0,65.0,23.0
+2025-01-01,Louisville,North Carolina,83.0,70.0,13.0
+2025-01-01,Clemson,Stanford,85.0,71.0,14.0
+2025-01-01,California,Pittsburgh,74.0,86.0,-12.0
+2025-01-04,Louisville,Virginia,70.0,50.0,20.0
+2025-01-04,North Carolina,Notre Dame,74.0,73.0,1.0
+2025-01-04,Pittsburgh,Stanford,83.0,68.0,15.0
+2025-01-04,California,Clemson,68.0,80.0,-12.0
+2025-01-04,Boston College,Georgia Tech,64.0,85.0,-21.0
+2025-01-04,Florida St.,Syracuse,90.0,74.0,16.0
+2025-01-04,Duke,SMU,89.0,62.0,27.0
+2025-01-07,North Carolina,SMU,82.0,67.0,15.0
+2025-01-07,Georgia Tech,Syracuse,55.0,62.0,-7.0
+2025-01-07,Clemson,Louisville,64.0,74.0,-10.0
+2025-01-07,Duke,Pittsburgh,76.0,47.0,29.0
+2025-01-08,Stanford,Virginia Tech,70.0,59.0,11.0
+2025-01-08,California,Virginia,75.0,61.0,14.0
+2025-01-11,Louisville,Pittsburgh,82.0,78.0,4.0
+2025-01-11,Stanford,Virginia,88.0,65.0,23.0
+2025-01-11,Boston College,Syracuse,71.0,79.0,-8.0
+2025-01-11,California,Virginia Tech,68.0,71.0,-3.0
+2025-01-11,Georgia Tech,SMU,71.0,93.0,-22.0
+2025-01-11,Clemson,Florida St.,77.0,57.0,20.0
+2025-01-11,Duke,Notre Dame,86.0,78.0,8.0
+2025-01-13,Boston College,Notre Dame,60.0,78.0,-18.0
+2025-01-14,Louisville,Syracuse,85.0,61.0,24.0
+2025-01-14,Clemson,Georgia Tech,70.0,59.0,11.0
+2025-01-15,SMU,Virginia,54.0,52.0,2.0
+2025-01-15,Stanford,Wake Forest,67.0,80.0,-13.0
+2025-01-15,California,North Carolina,53.0,79.0,-26.0
+2025-01-15,Florida St.,Pittsburgh,82.0,70.0,12.0
+2025-01-18,Louisville,Virginia,81.0,67.0,14.0
+2025-01-18,North Carolina,Stanford,71.0,72.0,-1.0
+2025-01-18,Virginia Tech,Wake Forest,63.0,72.0,-9.0
+2025-01-18,Notre Dame,Syracuse,69.0,77.0,-8.0
+2025-01-18,Boston College,Duke,63.0,88.0,-25.0
+2025-01-18,Florida St.,Georgia Tech,91.0,78.0,13.0
+2025-01-18,Clemson,Pittsburgh,78.0,75.0,3.0
+2025-01-21,Louisville,SMU,98.0,73.0,25.0
+2025-01-21,North Carolina,Wake Forest,66.0,67.0,-1.0
+2025-01-21,Boston College,Virginia,56.0,74.0,-18.0
+2025-01-22,Georgia Tech,Virginia Tech,71.0,64.0,7.0
+2025-01-22,California,Florida St.,77.0,68.0,9.0
+2025-01-22,Clemson,Syracuse,86.0,72.0,14.0
+2025-01-25,Notre Dame,Virginia,74.0,59.0,15.0
+2025-01-25,Pittsburgh,Syracuse,77.0,73.0,4.0
+2025-01-25,Boston College,North Carolina,96.0,102.0,-6.0
+2025-01-25,Florida St.,Stanford,71.0,78.0,-7.0
+2025-01-25,Duke,Wake Forest,63.0,56.0,7.0
+2025-01-25,Clemson,Virginia Tech,72.0,57.0,15.0
+2025-01-28,North Carolina,Pittsburgh,65.0,73.0,-8.0
+2025-01-28,Georgia Tech,Notre Dame,68.0,71.0,-3.0
+2025-01-28,Louisville,Wake Forest,72.0,59.0,13.0
+2025-01-29,Stanford,Syracuse,70.0,61.0,9.0
+2025-01-29,California,SMU,65.0,76.0,-11.0
+2025-01-29,Florida St.,Virginia Tech,66.0,76.0,-10.0
+2025-02-01,Virginia,Virginia Tech,74.0,75.0,-1.0
+2025-02-01,SMU,Stanford,85.0,61.0,24.0
+2025-02-01,Pittsburgh,Wake Forest,74.0,76.0,-2.0
+2025-02-01,Boston College,Florida St.,77.0,76.0,1.0
+2025-02-01,California,Syracuse,66.0,75.0,-9.0
+2025-02-01,Georgia Tech,Louisville,77.0,70.0,7.0
+2025-02-01,Duke,North Carolina,87.0,70.0,17.0
+2025-02-03,Pittsburgh,Virginia,57.0,73.0,-16.0
+2025-02-04,Florida St.,Notre Dame,67.0,60.0,7.0
+2025-02-04,Clemson,Georgia Tech,86.0,89.0,-3.0
+2025-02-05,SMU,Virginia Tech,81.0,75.0,6.0
+2025-02-05,Stanford,Wake Forest,73.0,79.0,-6.0
+2025-02-05,Boston College,Louisville,58.0,84.0,-26.0
+2025-02-05,Duke,Syracuse,83.0,54.0,29.0
+2025-02-08,Notre Dame,Virginia Tech,63.0,65.0,-2.0
+2025-02-08,North Carolina,Pittsburgh,67.0,66.0,1.0
+2025-02-08,Clemson,Duke,77.0,71.0,6.0
+2025-02-08,Boston College,Syracuse,86.0,95.0,-9.0
+2025-02-08,Georgia Tech,Virginia,61.0,75.0,-14.0
+2025-02-08,California,Wake Forest,66.0,76.0,-10.0
+2025-02-10,Clemson,North Carolina,85.0,65.0,20.0
+2025-02-11,Pittsburgh,SMU,63.0,83.0,-20.0
+2025-02-12,Georgia Tech,Stanford,60.0,52.0,8.0
+2025-02-12,Boston College,Notre Dame,94.0,97.0,-3.0
+2025-02-12,California,Duke,57.0,78.0,-21.0
+2025-02-12,Florida St.,Wake Forest,72.0,70.0,2.0
+2025-02-15,Virginia,Virginia Tech,73.0,70.0,3.0
+2025-02-15,SMU,Wake Forest,66.0,77.0,-11.0
+2025-02-15,North Carolina,Syracuse,88.0,82.0,6.0
+2025-02-15,California,Georgia Tech,88.0,90.0,-2.0
+2025-02-15,Duke,Stanford,106.0,70.0,36.0
+2025-02-15,Clemson,Florida St.,72.0,46.0,26.0
+2025-02-16,Louisville,Notre Dame,75.0,60.0,15.0
+2025-02-17,Duke,Virginia,80.0,62.0,18.0
+2025-02-18,Pittsburgh,Syracuse,80.0,69.0,11.0
+2025-02-18,Boston College,Virginia Tech,54.0,36.0,18.0
+2025-02-19,Notre Dame,SMU,73.0,97.0,-24.0
+2025-02-22,Notre Dame,Pittsburgh,76.0,72.0,4.0
+2025-02-22,North Carolina,Virginia,81.0,66.0,15.0
+2025-02-22,California,Stanford,61.0,66.0,-5.0
+2025-02-22,Boston College,Georgia Tech,69.0,54.0,15.0
+2025-02-22,Florida St.,Louisville,81.0,89.0,-8.0
+2025-02-22,Clemson,SMU,79.0,69.0,10.0
+2025-02-24,Florida St.,North Carolina,85.0,96.0,-11.0
+2025-02-25,Louisville,Virginia Tech,71.0,66.0,5.0
+2025-02-25,Georgia Tech,Pittsburgh,73.0,67.0,6.0
+2025-02-26,Virginia,Wake Forest,83.0,75.0,8.0
+2025-02-26,Boston College,Stanford,60.0,78.0,-18.0
+2025-02-26,Clemson,Notre Dame,83.0,68.0,15.0
+2025-02-26,California,SMU,77.0,81.0,-4.0
+2025-03-01,Louisville,Pittsburgh,79.0,68.0,11.0
+2025-03-01,Syracuse,Virginia Tech,95.0,101.0,-6.0
+2025-03-01,SMU,Stanford,68.0,73.0,-5.0
+2025-03-01,Notre Dame,Wake Forest,71.0,74.0,-3.0
+2025-03-01,Boston College,California,71.0,82.0,-11.0
+2025-03-01,Clemson,Virginia,71.0,58.0,13.0
+2025-03-01,Duke,Florida St.,100.0,65.0,35.0
+2025-03-03,Duke,Wake Forest,93.0,60.0,33.0
+2025-03-04,SMU,Syracuse,77.0,75.0,2.0
+2025-03-04,North Carolina,Virginia Tech,91.0,59.0,32.0
+2025-03-04,Florida St.,Virginia,57.0,60.0,-3.0
+2025-03-05,Notre Dame,Stanford,56.0,54.0,2.0
+2025-03-05,Boston College,Clemson,69.0,78.0,-9.0
+2025-03-05,California,Louisville,68.0,85.0,-17.0
+2025-03-08,Louisville,Stanford,68.0,48.0,20.0
+2025-03-08,Georgia Tech,Wake Forest,43.0,69.0,-26.0
+2025-03-08,Syracuse,Virginia,84.0,70.0,14.0
+2025-03-08,Boston College,Pittsburgh,67.0,93.0,-26.0
+2025-03-08,California,Notre Dame,110.0,112.0,-2.0
+2025-03-08,Florida St.,SMU,76.0,69.0,7.0
+2025-03-08,Duke,North Carolina,82.0,69.0,13.0
+2025-03-08,Clemson,Virginia Tech,65.0,47.0,18.0

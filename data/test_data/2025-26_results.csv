@@ -1,0 +1,101 @@
+year,month,day,team,opponent,location,teamscore,oppscore,canceled,postponed,OT,D1
+2025,11,3,Wake Forest,American,H,88.0,74.0,False,False,,2
+2025,11,3,Syracuse,Binghamton,H,85.0,47.0,False,False,,2
+2025,11,3,Boston College,Florida Atlantic,V,83.0,78.0,False,False,,2
+2025,11,3,California,Cal St. Bakersfield,H,87.0,60.0,False,False,,2
+2025,11,3,North Carolina,Central Arkansas,H,94.0,54.0,False,False,,2
+2025,11,3,Virginia Tech,Charleston Southern,H,98.0,67.0,False,False,,2
+2025,11,3,Miami FL,Jacksonville,H,86.0,69.0,False,False,,2
+2025,11,3,Notre Dame,LIU,H,89.0,67.0,False,False,,2
+2025,11,3,Georgia Tech,Maryland Eastern Sho,H,56.0,52.0,False,False,,2
+2025,11,3,Clemson,New Hampshire,H,88.0,38.0,False,False,,2
+2025,11,3,N.C. State,North Carolina Centr,H,114.0,66.0,False,False,,2
+2025,11,3,Virginia,Rider,H,91.0,53.0,False,False,,2
+2025,11,3,Louisville,South Carolina St.,H,104.0,45.0,False,False,,2
+2025,11,3,SMU,Tarleton St.,H,96.0,76.0,False,False,,2
+2025,11,3,Pittsburgh,Youngstown St.,H,74.0,59.0,False,False,,2
+2025,11,4,Florida St.,Alcorn St.,H,108.0,76.0,False,False,,2
+2025,11,4,Duke,Texas,N,75.0,60.0,False,False,,2
+2025,11,4,Stanford,Portland St.,H,89.0,79.0,False,False,,2
+2025,11,6,Miami FL,Bethune Cookman,H,101.0,61.0,False,False,,2
+2025,11,6,Louisville,Jackson St.,H,106.0,70.0,False,False,,2
+2025,11,6,SMU,Texas A&M Corpus Chr,H,69.0,58.0,False,False,,2
+2025,11,6,Boston College,The Citadel,H,76.0,47.0,False,False,,2
+2025,11,6,California,Wright St.,H,77.0,67.0,False,False,,2
+2025,11,7,Florida St.,Alabama St.,H,101.0,64.0,False,False,,2
+2025,11,7,Georgia Tech,Bryant,H,74.0,45.0,False,False,,2
+2025,11,7,Notre Dame,Detroit Mercy,H,102.0,70.0,False,False,,2
+2025,11,7,Clemson,Gardner Webb,H,97.0,59.0,False,False,,2
+2025,11,7,North Carolina,Kansas,H,87.0,74.0,False,False,,2
+2025,11,7,Pittsburgh,Longwood,H,78.0,60.0,False,False,,2
+2025,11,7,Wake Forest,Morehead St.,H,81.0,65.0,False,False,,2
+2025,11,7,Virginia,North Carolina Centr,H,81.0,62.0,False,False,,2
+2025,11,7,N.C. State,UAB,H,94.0,70.0,False,False,,2
+2025,11,8,Syracuse,Delaware St.,H,83.0,43.0,False,False,,2
+2025,11,8,Stanford,Montana,H,91.0,68.0,False,False,,2
+2025,11,8,Virginia Tech,Providence,N,107.0,101.0,False,False,,2
+2025,11,8,Duke,Western Carolina,H,95.0,54.0,False,False,,2
+2025,11,10,California,Cal St. Fullerton,H,93.0,65.0,False,False,,2
+2025,11,10,Pittsburgh,Eastern Michigan,H,78.0,66.0,False,False,,2
+2025,11,10,Georgia Tech,Southeastern Louisia,H,70.0,60.0,False,False,,2
+2025,11,10,Miami FL,Stetson,H,102.0,61.0,False,False,,2
+2025,11,11,Boston College,Central Connecticut,V,60.0,59.0,False,False,,2
+2025,11,11,Duke,Army,V,114.0,59.0,False,False,,2
+2025,11,11,Notre Dame,Eastern Illinois,H,78.0,58.0,False,False,,2
+2025,11,11,Florida St.,Florida,V,78.0,76.0,False,False,,2
+2025,11,11,Virginia,Hampton,H,91.0,53.0,False,False,,2
+2025,11,11,Louisville,Kentucky,N,96.0,88.0,False,False,,2
+2025,11,11,Wake Forest,Michigan,N,85.0,84.0,False,False,,2
+2025,11,11,Clemson,Morehead St.,H,83.0,56.0,False,False,,2
+2025,11,11,SMU,Murray St.,H,102.0,91.0,False,False,,2
+2025,11,11,North Carolina,Radford,H,89.0,74.0,False,False,,2
+2025,11,12,Stanford,Montana St.,H,77.0,68.0,False,False,,2
+2025,11,12,Virginia Tech,Saint Joseph's,H,94.0,59.0,False,False,,2
+2025,11,12,N.C. State,UNC Greensboro,H,110.0,64.0,False,False,,2
+2025,11,13,California,Kansas St.,V,99.0,96.0,False,False,,2
+2025,11,13,Pittsburgh,West Virginia,V,71.0,49.0,False,False,,2
+2025,11,14,Georgia Tech,Georgia,V,92.0,87.0,False,False,,2
+2025,11,14,Duke,Indiana St.,H,100.0,62.0,False,False,,2
+2025,11,14,North Carolina,North Carolina Centr,H,97.0,53.0,False,False,,2
+2025,11,15,Boston College,Temple,V,76.0,71.0,False,False,,2
+2025,11,15,SMU,Butler,H,87.0,85.0,False,False,,2
+2025,11,15,Clemson,Georgetown,V,79.0,74.0,False,False,,2
+2025,11,15,Syracuse,Drexel,N,80.0,50.0,False,False,,2
+2025,11,15,Virginia,Marshall,H,104.0,78.0,False,False,,2
+2025,11,15,Louisville,Ohio,H,106.0,81.0,False,False,,2
+2025,11,16,Virginia Tech,Charlotte,H,84.0,76.0,False,False,,2
+2025,11,16,Miami FL,Florida,N,82.0,68.0,False,False,,2
+2025,11,16,Notre Dame,Ohio St.,V,64.0,63.0,False,False,,2
+2025,11,16,Wake Forest,UMass Lowell,H,109.0,75.0,False,False,,2
+2025,11,17,Pittsburgh,Bucknell,H,84.0,50.0,False,False,,2
+2025,11,17,Clemson,North Alabama,H,81.0,61.0,False,False,,2
+2025,11,17,N.C. State,VCU,H,85.0,79.0,False,False,,2
+2025,11,18,SMU,Arkansas Pine Bluff,H,106.0,60.0,False,False,,2
+2025,11,18,Duke,Kansas,N,78.0,66.0,False,False,,2
+2025,11,18,Georgia Tech,Georgia Southern,H,68.0,66.0,False,False,,2
+2025,11,18,Boston College,Hampton,H,63.0,52.0,False,False,,2
+2025,11,18,Stanford,Louisiana,H,93.0,66.0,False,False,,2
+2025,11,18,Syracuse,Monmouth,H,78.0,73.0,False,False,,2
+2025,11,18,North Carolina,Navy,H,73.0,61.0,False,False,,2
+2025,11,18,California,Presbyterian,H,67.0,57.0,False,False,,2
+2025,11,19,Florida St.,Tennessee Martin,H,87.0,73.0,False,False,,2
+2025,11,19,Notre Dame,Bellarmine,H,86.0,79.0,False,False,,2
+2025,11,19,Virginia Tech,Bryant,H,78.0,61.0,False,False,,2
+2025,11,20,Miami FL,Elon,H,99.0,72.0,False,False,,2
+2025,11,20,Pittsburgh,UCF,V,77.0,67.0,False,False,,2
+2025,11,20,Wake Forest,Texas Tech,V,84.0,83.0,False,False,,2
+2025,11,21,SMU,Arkansas St.,H,100.0,69.0,False,False,,2
+2025,11,21,Boston College,Davidson,V,59.0,49.0,False,False,,2
+2025,11,21,Louisville,Cincinnati,H,74.0,64.0,False,False,,2
+2025,11,21,Clemson,West Virginia,H,70.0,67.0,False,False,,2
+2025,11,21,Florida St.,Georgia Southern,H,98.0,72.0,False,False,,2
+2025,11,21,Wake Forest,Memphis,H,69.0,68.0,False,False,,2
+2025,11,21,Duke,Niagara,H,100.0,42.0,False,False,,2
+2025,11,21,Virginia,Northwestern,H,83.0,78.0,False,False,,2
+2025,11,21,California,Sacramento St.,H,91.0,67.0,False,False,,2
+2025,11,21,Stanford,Seattle,H,77.0,69.0,False,False,,2
+2025,11,23,Boston College,Tulane,N,93.0,90.0,False,False,,2
+2025,11,23,Virginia,Butler,V,80.0,73.0,False,False,,2
+2025,11,23,Clemson,Georgia,H,97.0,94.0,False,False,,2
+2025,11,23,Miami FL,Delaware St.,H,97.0,41.0,False,False,,2
+2025,11,23,Duke,Howard,H,93.0,56.0,False,False,,2
