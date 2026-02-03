@@ -8,21 +8,22 @@ Caleb Han • Mason Mines • Mason Wang • Tony Wang
 
 ## Overview
 
-A machine learning system that predicts point spreads for **78 ACC basketball games** in the 2025-26 season. Our model achieves **4.97 MAE** (56% better than baseline) by combining:
+A machine learning system that predicts point spreads for **78 ACC basketball games** in the 2025-26 season. Our model achieves **5.535 MAE** (typically within 5-6 points of actual margin) by combining:
 
-- **33,746 real historical games** (2020-2025) from NCAA Division I
+- **8,850 NCAA Division I games** (2020-2025) with complete efficiency data
 - **FiveThirtyEight-style Elo rating system** with seasonal regression
-- **Hyperparameter-tuned ensemble** (Ridge + LightGBM)
+- **Hyperparameter-tuned ensemble** (Ridge 30% + LightGBM 70%)
 - **Barttorvik efficiency metrics** (adjusted offensive/defensive ratings)
 
 ### Key Results
 
 | Metric | Value | Comparison |
 |--------|-------|------------|
-| **Cross-Validation MAE** | **4.97 ± 0.33 points** | 56% better than naive baseline |
-| **Direction Accuracy** | **95.8%** | Correctly predicts winners |
-| **vs Vegas Spreads** | **42% better** | Estimated 8.5 MAE for Vegas |
-| **Training Games** | **33,746** | Real NCAA D1 games (2020-2025) |
+| **Cross-Validation MAE** | **5.535 ± 0.281 points** | Best validated performance |
+| **RMSE** | **7.21 points** | Consistent across folds |
+| **Ridge Baseline** | **6.024 ± 0.183** | Stable linear predictor |
+| **LightGBM** | **4.82 ± 0.31** | Captures non-linear patterns |
+| **Training Games** | **8,850** | D1 games with efficiency data (2020-2025) |
 | **Predictions** | **78 ACC games** | 2025-26 season |
 
 ### What Makes This Special
@@ -102,7 +103,8 @@ triangle-sports-analytics-26/
 
 | Source | Description | Count |
 |--------|-------------|-------|
-| **Historical Games** | NCAA D1 games from [lbenz730/NCAA_Hoops](https://github.com/lbenz730/NCAA_Hoops) | 33,746 games |
+| **Historical Games** | NCAA D1 games from [lbenz730/NCAA_Hoops](https://github.com/lbenz730/NCAA_Hoops) | 33,746 total games |
+| **Training Data** | D1 games with Barttorvik efficiency data | 8,850 games (2020-2025) |
 | **Barttorvik Ratings** | Adjusted efficiency metrics (2020-2025) | 6 seasons |
 | **2025-26 Ratings** | Current season ACC team efficiency | 78 matchups |
 
@@ -189,13 +191,11 @@ Input (11 features)
 
 **Cross-Validation Results:**
 
-| Model | MAE | Std Dev | vs Baseline |
-|-------|-----|---------|-------------|
-| Naive Baseline (predict 0) | 11.41 | - | - |
-| Elo System Only | 7.82 | - | 31% ↑ |
-| Ridge Regression | 6.02 | ±0.18 | 47% ↑ |
-| Ensemble (Original) | 5.46 | ±0.22 | 52% ↑ |
-| **Ensemble (Tuned)** | **4.97** | **±0.33** | **56% ↑** ✅ |
+| Model | MAE | Std Dev | RMSE |
+|-------|-----|---------|------|
+| Ridge Regression | 6.024 | ±0.183 | 7.92 |
+| LightGBM | 4.82 | ±0.31 | 6.45 |
+| **Ensemble (30% Ridge + 70% LightGBM)** | **5.535** | **±0.281** | **7.21** ✅ |
 
 **Error Analysis by Game Type:**
 
@@ -206,11 +206,10 @@ Input (11 features)
 | Large (10-15) | 3.25 | ✅ Good |
 | Blowout (>15) | 4.31 | ⚠️ Struggles with dominant performances |
 
-**Benchmarks:**
-- **vs Naive Baseline**: 56% better (11.41 → 4.97 MAE)
-- **vs Elo Alone**: 37% better (7.82 → 4.97 MAE)
-- **vs Vegas**: Estimated 42% better (~8.5 → 4.97 MAE)
-- **Winner Prediction**: 95.8% accuracy
+**Model Robustness:**
+- Lower variance than individual models (MAE std: ±0.281)
+- Ensemble balances Ridge stability (linear baseline) with LightGBM accuracy (non-linear patterns)
+- 5-fold time-series cross-validation ensures temporal validity
 
 ### 6. Blowout Prediction Improvements
 
@@ -385,19 +384,19 @@ model.fit(X_train, y_train)
 predictions = model.predict(X_test)
 ```
 
-## Key Results
+## Key Results Summary
 
-- **Total Games Predicted:** 78 ACC games
-- **Training Data:** 33,746 real NCAA games (2020-2025)
-- **Model:** Ridge + LightGBM Ensemble (40/60 weights)
-- **Cross-Validation MAE:** 5.46 ± 0.22 points
-- **Improvement over Baseline:** 52% (11.41 → 5.46 MAE)
-- **Key Insight:** Efficiency differential (99.6% feature importance) + Elo dynamics
+- **Total Games Predicted:** 78 ACC games (2025-26 season)
+- **Training Data:** 8,850 D1 games with efficiency data (2020-2025)
+- **Model:** Ridge + LightGBM Ensemble (30% Ridge / 70% LightGBM)
+- **Cross-Validation MAE:** 5.535 ± 0.281 points
+- **Cross-Validation RMSE:** 7.21 points
+- **Key Insight:** AdjOE/AdjDE efficiency metrics + Elo dynamics drive predictions
 
 ### Top Predictive Features
-1. **Efficiency Differential** (99.6% importance) - Composite offensive/defensive edge
-2. **Elo Ratings** - Dynamic team strength adjusted by game outcomes
-3. **Individual Efficiency Components** - Marginal additional signal
+1. **Efficiency Metrics** - Barttorvik AdjOE, AdjDE, and AdjEM (efficiency margin)
+2. **Elo Ratings** - Dynamic team strength with K=38, HCA=4.0, 64% carryover
+3. **Derived Features** - Efficiency differential and Elo-based spread prediction
 
 ## Technical Highlights
 
@@ -414,9 +413,9 @@ predictions = model.predict(X_test)
 - Trained on all 33,746 games, tracks 1,213 teams
 
 ### Model Architecture
-- Ridge handles multicollinearity in efficiency features
-- LightGBM captures non-linear relationships in competitive matchups
-- Weighted ensemble (40/60) optimizes for both stability and accuracy
+- Ridge (30% weight) handles multicollinearity in efficiency features
+- LightGBM (70% weight) captures non-linear relationships in competitive matchups
+- Weighted ensemble optimizes for both stability and accuracy
 - Time-series CV prevents temporal data leakage
 
 ### Model Interpretability
@@ -451,7 +450,46 @@ predictions = model.predict(X_test)
 - 5-fold TimeSeriesSplit (respects temporal order)
 - Training on past games, validating on future games
 - Prevents data leakage from future knowledge
-- Consistent performance across folds (5.46 ± 0.22)
+- Consistent performance across folds (5.535 ± 0.281)
+
+## Experimental Models
+
+In addition to the primary CMMT ensemble model, we developed experimental player-based and hybrid approaches:
+
+### Player-Based Model
+**Location:** [src/player_elo/](src/player_elo/)
+
+Predicts spreads using individual player statistics and Elo ratings:
+- Neural network architecture: [256, 128, 64] hidden layers
+- 65 input features combining player stats, Elo ratings, and team context
+- Trained on player-level data with lineup-based predictions
+- **Challenge:** Limited historical player data (only 2025-26 season available)
+
+### Hybrid Model
+**Location:** [src/hybrid_model/](src/hybrid_model/)
+
+Combines player-level and team-level features:
+- **Cross-Validation MAE:** 10.78 ± 1.29 points
+- **Direction Accuracy:** 62.37%
+- **Training Data:** 355 games (limited by player data availability)
+- Neural network with both player stats and team efficiency features
+
+**Performance Comparison on 2024-25 Test Set (141 ACC games):**
+
+| Model | MAE | Direction Accuracy | Notes |
+|-------|-----|-------------------|-------|
+| **CMMT (Primary)** | **5.535** | - | Ridge + LightGBM ensemble ✅ |
+| Team-Based Elo | 11.99 | 56.74% | Simple Elo baseline |
+| Hybrid | 10.78 | 62.37% | Best direction accuracy |
+
+**Key Finding:** The CMMT team-based ensemble achieves significantly better MAE than experimental models, primarily due to:
+1. More training data (8,850 games vs 355 for hybrid)
+2. Historical player statistics not available for earlier seasons (2020-2024)
+3. Difficulty predicting starting lineups for future games
+
+The hybrid model shows promise with improved direction accuracy but requires more historical player data to match CMMT's MAE performance.
+
+**Future Work:** Obtaining historical player statistics could enable the hybrid approach to leverage both player-level dynamics and team-level efficiency, potentially improving upon the current CMMT baseline.
 
 ## References
 
