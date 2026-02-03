@@ -120,30 +120,29 @@ def test_player_based_system(test_games):
     else:
         state_dict = checkpoint
 
-    # Infer input dimension from state dict
-    # Try different possible key names
-    possible_keys = ['layers.0.weight', 'fc1.weight', '0.weight']
-    first_layer_weight = None
-    for key in possible_keys:
-        if key in state_dict:
-            first_layer_weight = state_dict[key]
-            break
+    # Infer architecture from state dict
+    if 'network.0.weight' in state_dict:
+        # Standard PlayerELONet architecture
+        input_dim = state_dict['network.0.weight'].shape[1]
+        hidden_dims = []
 
-    if first_layer_weight is None:
+        # Extract hidden layer dimensions (layers 0, 3, 6, 9, ...)
+        # network structure: Linear (0), ReLU (1), Dropout (2), Linear (3), ...
+        layer_idx = 0
+        while f'network.{layer_idx}.weight' in state_dict:
+            layer_shape = state_dict[f'network.{layer_idx}.weight'].shape
+            # Check if this is NOT the output layer (output has shape [1, prev_dim])
+            if layer_shape[0] != 1:
+                hidden_dims.append(layer_shape[0])
+            layer_idx += 3  # Skip ReLU and Dropout layers
+
+        if not hidden_dims:
+            hidden_dims = [128, 64, 32]  # Default fallback
+    else:
+        # Try other possible architectures
         print(f"  Available keys: {list(state_dict.keys())[:5]}")
         input_dim = 65  # Default
         hidden_dims = [128, 64, 32]  # Default
-    else:
-        input_dim = first_layer_weight.shape[1]
-        # Infer hidden dimensions from state dict
-        if 'network.0.weight' in state_dict:
-            hidden_dims = [state_dict['network.0.weight'].shape[0]]
-            if 'network.4.weight' in state_dict:
-                hidden_dims.append(state_dict['network.4.weight'].shape[0])
-            if 'network.8.weight' in state_dict:
-                hidden_dims.append(state_dict['network.8.weight'].shape[0])
-        else:
-            hidden_dims = [128, 64, 32]
 
     # Create model with correct architecture
     model = PlayerELONet(input_dim=input_dim, hidden_dims=hidden_dims)
