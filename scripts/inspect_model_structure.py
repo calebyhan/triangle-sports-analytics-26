@@ -57,7 +57,11 @@ def inspect_model(model_path, model_name):
         info = linear_layers[layer_num]
         if 'weight' in info:
             w_shape = info['weight']
-            print(f"  Layer {layer_num}: {w_shape[1]} → {w_shape[0]}")
+            # Linear layers have 2D weights, BatchNorm has 1D
+            if len(w_shape) == 2:
+                print(f"  Layer {layer_num}: {w_shape[1]} → {w_shape[0]} (Linear)")
+            else:
+                print(f"  Layer {layer_num}: {w_shape[0]} (BatchNorm)")
 
     # Calculate total params
     total_params = sum(p.numel() for p in state_dict.values())

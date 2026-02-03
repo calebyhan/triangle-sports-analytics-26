@@ -126,15 +126,17 @@ def test_player_based_system(test_games):
         input_dim = state_dict['network.0.weight'].shape[1]
         hidden_dims = []
 
-        # Extract hidden layer dimensions (layers 0, 3, 6, 9, ...)
-        # network structure: Linear (0), ReLU (1), Dropout (2), Linear (3), ...
-        layer_idx = 0
-        while f'network.{layer_idx}.weight' in state_dict:
-            layer_shape = state_dict[f'network.{layer_idx}.weight'].shape
-            # Check if this is NOT the output layer (output has shape [1, prev_dim])
-            if layer_shape[0] != 1:
-                hidden_dims.append(layer_shape[0])
-            layer_idx += 3  # Skip ReLU and Dropout layers
+        # Find all Linear layers by looking for weights that aren't 1D (BatchNorm)
+        # and aren't part of BatchNorm running stats
+        for key in sorted(state_dict.keys()):
+            if '.weight' in key and 'network.' in key:
+                weight_shape = state_dict[key].shape
+                # Linear layers have 2D weights, BatchNorm has 1D weights
+                if len(weight_shape) == 2:
+                    output_dim = weight_shape[0]
+                    # Skip the final output layer (output_dim == 1)
+                    if output_dim != 1:
+                        hidden_dims.append(output_dim)
 
         if not hidden_dims:
             hidden_dims = [128, 64, 32]  # Default fallback
