@@ -30,8 +30,8 @@ mkdir -p logs/slurm
 mkdir -p logs/pipeline
 
 # Activate environment
-# Using Python venv (not conda)
-source .venv/bin/activate
+module load anaconda
+conda activate -p $SLURM_SUBMIT_DIR/.venv
 
 # Set Python path
 export PYTHONPATH=$SLURM_SUBMIT_DIR:$PYTHONPATH
