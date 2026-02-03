@@ -170,6 +170,11 @@ def test_player_based_system(test_games):
     predictions = []
     actuals = []
 
+    # Debug counters
+    successful_predictions = 0
+    fallback_predictions = 0
+    failed_predictions = 0
+
     # Team name mapping
     TEAM_NAME_MAPPING = {
         'Florida State': 'Florida St.',
@@ -196,6 +201,9 @@ def test_player_based_system(test_games):
             home_elo = np.mean([elo_system.get_elo(p) for p in home_players['player_id'][:5]]) if len(home_players) > 0 else 1000
             away_elo = np.mean([elo_system.get_elo(p) for p in away_players['player_id'][:5]]) if len(away_players) > 0 else 1000
             predicted_spread = (home_elo - away_elo) / 25.0
+            fallback_predictions += 1
+            if idx == 0:
+                print(f"  [DEBUG] No players found for {home_team} vs {away_team}, using fallback")
         else:
             # Get lineups
             home_players = home_players.sort_values('minutes_per_game', ascending=False).head(5)
@@ -216,9 +224,13 @@ def test_player_based_system(test_games):
                 with torch.no_grad():
                     features_tensor = torch.FloatTensor(features).unsqueeze(0)
                     predicted_spread = model(features_tensor).item()
+                successful_predictions += 1
             except Exception as e:
                 # Fallback
                 predicted_spread = 0.0
+                failed_predictions += 1
+                if idx < 5:
+                    print(f"  [DEBUG] Feature generation failed for {home_team} vs {away_team}: {e}")
 
         predictions.append(predicted_spread)
         actuals.append(actual_spread)
@@ -230,6 +242,11 @@ def test_player_based_system(test_games):
     actuals = np.array(actuals)
 
     metrics = evaluate_predictions(predictions, actuals)
+
+    print(f"\n  Prediction breakdown:")
+    print(f"    Successful (model): {successful_predictions}/{len(test_games)}")
+    print(f"    Fallback (ELO): {fallback_predictions}/{len(test_games)}")
+    print(f"    Failed (0.0): {failed_predictions}/{len(test_games)}")
 
     print(f"\n  Results:")
     print(f"    MAE: {metrics['mae']:.2f} points")
