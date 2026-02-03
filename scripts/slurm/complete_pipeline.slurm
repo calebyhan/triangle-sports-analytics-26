@@ -26,8 +26,8 @@ mkdir -p logs/slurm
 mkdir -p logs/pipeline
 
 # Activate environment
-# source ~/miniconda3/etc/profile.d/conda.sh
-# conda activate sports-analytics
+module load anaconda
+conda activate ./.venv
 
 # Set Python path
 export PYTHONPATH=$SLURM_SUBMIT_DIR:$PYTHONPATH
@@ -125,3 +125,5 @@ echo "" | tee -a $PIPELINE_LOG
 echo "Recommended Submission: data/predictions/tsa_pt_spread_HYBRID_2026.csv" | tee -a $PIPELINE_LOG
 echo "" | tee -a $PIPELINE_LOG
 echo "Full log saved to: $PIPELINE_LOG" | tee -a $PIPELINE_LOG
+
+conda deactivate
