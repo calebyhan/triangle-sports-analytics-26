@@ -31,6 +31,11 @@ mkdir -p logs/pipeline
 
 # Activate environment
 module load anaconda
+
+# Initialize conda for bash shell
+eval "$(conda shell.bash hook)"
+
+# Now activate the environment
 conda activate $SLURM_SUBMIT_DIR/.venv
 
 # Set Python path
