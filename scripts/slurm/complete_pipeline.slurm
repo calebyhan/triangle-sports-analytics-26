@@ -30,8 +30,8 @@ mkdir -p logs/slurm
 mkdir -p logs/pipeline
 
 # Activate environment
-module load anaconda
-conda activate ./.venv
+# Using Python venv (not conda)
+source .venv/bin/activate
 
 # Set Python path
 export PYTHONPATH=$SLURM_SUBMIT_DIR:$PYTHONPATH
@@ -66,9 +66,14 @@ run_step() {
 # Print environment
 echo "Environment Information:" | tee -a $PIPELINE_LOG
 echo "  Python: $(python --version)" | tee -a $PIPELINE_LOG
+echo "  Python Path: $(which python)" | tee -a $PIPELINE_LOG
+echo "  Conda Env: $CONDA_DEFAULT_ENV" | tee -a $PIPELINE_LOG
 echo "  PyTorch: $(python -c 'import torch; print(torch.__version__)')" | tee -a $PIPELINE_LOG
 echo "  CUDA Available: $(python -c 'import torch; print(torch.cuda.is_available())')" | tee -a $PIPELINE_LOG
 echo "  GPU Count: $(python -c 'import torch; print(torch.cuda.device_count())')" | tee -a $PIPELINE_LOG
+echo "" | tee -a $PIPELINE_LOG
+echo "Checking rapidfuzz installation:" | tee -a $PIPELINE_LOG
+python -c "import rapidfuzz; print(f'  rapidfuzz version: {rapidfuzz.__version__}')" 2>&1 | tee -a $PIPELINE_LOG || echo "  rapidfuzz NOT FOUND" | tee -a $PIPELINE_LOG
 echo "" | tee -a $PIPELINE_LOG
 
 # Step 1: Generate Player-Based Optimized Predictions
