@@ -9,6 +9,10 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G                      # 64GB memory for full pipeline
 
+# Exit on error and catch pipeline failures
+set -e
+set -o pipefail
+
 # Print job information
 echo "=========================================================================="
 echo "Triangle Sports Analytics - Complete Prediction Pipeline"
@@ -67,39 +71,27 @@ echo "  CUDA Available: $(python -c 'import torch; print(torch.cuda.is_available
 echo "  GPU Count: $(python -c 'import torch; print(torch.cuda.device_count())')" | tee -a $PIPELINE_LOG
 echo "" | tee -a $PIPELINE_LOG
 
-# Step 1: Train Player-Based Model
-run_step "Player-Based Model Training" \
-    "python scripts/player_elo/train_model.py --years 2020 2021 2022 2023 2024 2025 --cv-splits 5"
-
-# Step 2: Generate Player-Based Predictions
-run_step "Player-Based Predictions" \
-    "python scripts/player_elo/generate_predictions.py"
-
-# Step 3: Train Player-Based Optimized
-run_step "Player-Based Optimized Training" \
-    "python scripts/player_elo/train_optimized.py --years 2020 2021 2022 2023 2024 2025 --cv-splits 5"
-
-# Step 4: Generate Player-Based Optimized Predictions
+# Step 1: Generate Player-Based Optimized Predictions
 run_step "Player-Based Optimized Predictions" \
     "python scripts/player_elo/generate_predictions_optimized.py"
 
-# Step 5: Train Hybrid Model
+# Step 2: Train Hybrid Model
 run_step "Hybrid Model Training" \
     "python scripts/train_hybrid_model.py"
 
-# Step 6: Generate Hybrid Predictions
+# Step 3: Generate Hybrid Predictions
 run_step "Hybrid Predictions" \
     "python scripts/generate_hybrid_predictions.py"
 
-# Step 7: Compare Frameworks (on test data)
+# Step 4: Compare Frameworks (on test data)
 run_step "Framework Comparison" \
     "python scripts/compare_frameworks.py"
 
-# Step 8: Create Ensemble
+# Step 5: Create Ensemble
 run_step "Ensemble Creation" \
     "python scripts/create_ensemble.py"
 
-# Step 9: Generate Final Report
+# Final Report
 echo "" | tee -a $PIPELINE_LOG
 echo "==========================================================================" | tee -a $PIPELINE_LOG
 echo "PIPELINE COMPLETED SUCCESSFULLY" | tee -a $PIPELINE_LOG
