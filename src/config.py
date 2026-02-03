@@ -28,6 +28,14 @@ TRAINING_YEARS = [2020, 2021, 2022, 2023, 2024, 2025]
 # Current prediction year
 PREDICTION_YEAR = 2026
 
+# ACC Teams for 2025-26 season
+ACC_TEAMS = [
+    'Michigan', 'Duke', 'Virginia', 'Louisville', 'Clemson', 'NC State',
+    'North Carolina', 'SMU', 'Ohio State', 'Miami', 'Virginia Tech',
+    'California', 'Wake Forest', 'Syracuse', 'Baylor', 'Stanford',
+    'Notre Dame', 'Florida State', 'Pitt', 'Georgia Tech', 'Boston College'
+]
+
 # Template file for competition submission
 SUBMISSION_TEMPLATE = "tsa_pt_spread_template_2026 - Sheet1.csv"
 
@@ -154,6 +162,46 @@ TEAM_INFO = {
 
 # Competition deadline
 COMPETITION_DEADLINE = "February 6, 2026"
+
+# ============================================================================
+# ENHANCED FEATURES CONFIGURATION
+# ============================================================================
+
+# Enhanced features to add to baseline (13 features)
+ENHANCED_FEATURES = [
+    # Momentum features (3)
+    'momentum_diff',           # Recent margin differential
+    'win_streak_diff',         # Current streak differential
+    'recent_win_pct_diff',     # Last 5 games win % differential
+
+    # Blowout tendency (4)
+    'run_diff_differential',   # Average margin differential
+    'blowout_tendency_diff',   # Blowout rate differential
+    'consistency_ratio',       # Consistency of dominance
+    'hot_streak_advantage',    # Winning streak advantage
+
+    # Player-based features (4)
+    'star_power_diff',         # Top 3 scorers PPG differential
+    'bench_depth_diff',        # Bench production differential
+    'offensive_balance_diff',  # Scoring distribution differential
+    'star_efficiency_diff',    # Star player TS% differential
+
+    # Team-specific HCA (2)
+    'home_team_hca',           # Home team's historical HCA
+    'away_team_hca',           # Away team's historical HCA
+]
+
+# Feature flags (enable/disable groups)
+ENHANCED_FEATURE_FLAGS = {
+    'use_momentum': True,
+    'use_blowout': True,
+    'use_player_features': True,
+    'use_team_hca': True,
+    'use_haslametrics': False,  # Only if historical data available
+}
+
+# Historical player data path
+HISTORICAL_PLAYER_DATA = PROCESSED_DATA_DIR / 'historical_player_box_scores_2020_2024.csv'
 
 # ============================================================================
 # OUTPUT FORMATTING

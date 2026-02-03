@@ -170,15 +170,13 @@ def fetch_team_ratings_selenium(year: int = 2026) -> pd.DataFrame:
         # Get the fully-rendered HTML
         html = driver.page_source
 
-        # Parse with pandas
-        tables = pd.read_html(html)
+        # Use custom parser instead of pd.read_html
+        from .haslametrics_parser import parse_haslametrics_ratings
+        df = parse_haslametrics_ratings(html)
 
-        if len(tables) == 0:
-            logger.warning(f"No tables found in {url}")
+        if df.empty:
+            logger.warning(f"No data parsed from {url}")
             return pd.DataFrame()
-
-        # Find the main ratings table (largest one)
-        df = max(tables, key=len)
 
         logger.info(f"Fetched {len(df)} team ratings from Haslametrics via Selenium")
         return df
