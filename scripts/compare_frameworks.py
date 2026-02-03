@@ -217,7 +217,7 @@ def test_player_based_system(test_games):
                 features = feature_engine.create_matchup_features(
                     home_lineup, away_lineup,
                     home_team, away_team,
-                    is_neutral=False
+                    neutral=False
                 )
 
                 # Predict
