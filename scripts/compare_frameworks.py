@@ -96,15 +96,14 @@ def test_player_based_system(test_games):
     print("  TESTING PLAYER-BASED SYSTEM")
     print("="*70)
 
-    # Load model
-    model_path = project_root / 'data' / 'player_data' / 'models' / 'pytorch_model_optimized.pt'
-
-    if not model_path.exists():
-        model_path = project_root / 'data' / 'player_data' / 'models' / 'pytorch_model.pt'
+    # Load model - use regular model (optimized model has BatchNorm layers not supported by PlayerELONet)
+    model_path = project_root / 'data' / 'player_data' / 'models' / 'pytorch_model.pt'
 
     if not model_path.exists():
         print("  [ERROR] Player model not found")
         return None, None, None
+
+    print(f"  Using model: {model_path.name}")
 
     # Load ELO state
     elo_state_path = project_root / 'data' / 'player_data' / 'models' / 'player_elo_state.json'
