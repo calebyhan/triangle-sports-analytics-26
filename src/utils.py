@@ -72,7 +72,7 @@ def fetch_url_with_retry(
                 content = response.read().decode('utf-8')
 
                 if parse_csv:
-                    return pd.read_csv(StringIO(content))
+                    return pd.read_csv(StringIO(content), index_col=False)
                 else:
                     return content
 
@@ -88,7 +88,7 @@ def fetch_url_with_retry(
             else:
                 # Last attempt with SSL failed - try without verification as fallback
                 print(f"   ⚠ All {max_retries} attempts failed with SSL verification")
-                print(f"   Final attempt without SSL verification...")
+                print(f"   ⚠ WARNING: Attempting without SSL verification (INSECURE!)")
 
                 try:
                     ssl_context_unverified = ssl.create_default_context()
@@ -99,7 +99,7 @@ def fetch_url_with_retry(
                         content = response.read().decode('utf-8')
 
                         if parse_csv:
-                            return pd.read_csv(StringIO(content))
+                            return pd.read_csv(StringIO(content), index_col=False)
                         else:
                             return content
 

@@ -45,7 +45,7 @@ Our model uses \textbf{11 features} derived from two primary data sources:
 \end{itemize}
 
 \section*{Training Data}
-Trained on \textbf{8,850 NCAA games} from 2020--2025 (6 seasons). Games were processed chronologically for accurate Elo histories and to avoid data leakage. Includes all major conferences.
+Trained on \textbf{18,024 NCAA games} from 2020--2025 (6 seasons), representing 53.4\% of games after filtering for complete Barttorvik data. Games processed chronologically for accurate Elo histories and to avoid data leakage.
 
 \section*{Model Evaluation}
 We used \textbf{5-fold time-series cross-validation} to respect temporal ordering, evaluating on future games to mimic real-world prediction.
@@ -56,21 +56,22 @@ We used \textbf{5-fold time-series cross-validation} to respect temporal orderin
 \toprule
 \textbf{Model} & \textbf{MAE (points)} & \textbf{RMSE (points)} \\
 \midrule
-Ridge & 6.024 $\pm$ 0.183 & 7.92 \\
-LightGBM & 4.82 $\pm$ 0.31 & 6.45 \\
-\textbf{Ensemble} & \textbf{5.535 $\pm$ 0.281} & \textbf{7.21} \\
+Ridge & 5.975 $\pm$ 0.160 & 7.85 \\
+LightGBM & 4.65 $\pm$ 0.29 & 6.22 \\
+\textbf{Ensemble} & \textbf{5.171 $\pm$ 0.248} & \textbf{6.89} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\noindent The ensemble achieves MAE of \textbf{5.5 points} (typically within 5--6 points of actual margin) with lower variance, demonstrating improved robustness.
+\noindent The ensemble achieves MAE of \textbf{5.2 points} with lower variance, demonstrating improved robustness.
 
 \section*{Key Decisions}
 \vspace{-0.1cm}
 \begin{itemize}
-    \item \textbf{Feature selection:} Advanced features (Four Factors, momentum) decreased performance (MAE 5.017 vs.\ 5.001). Retained 11 baseline features. AdjOE/AdjDE and Elo were strongest predictors.
-    \item \textbf{Ensemble weighting:} LightGBM 70\% (accuracy), Ridge 30\% (stability). Optimized via validation.
-    \item \textbf{Hyperparameters:} Ridge $\alpha$ = 1.0; LightGBM: 100 trees, depth = 8, rate = 0.1. Tuned via CV.
+    \item \textbf{Feature selection:} Retained 11 baseline features (efficiency + Elo). Advanced features decreased performance. AdjOE/AdjDE and Elo differential were strongest predictors.
+    \item \textbf{Data quality:} Comprehensive validation ensures correct team-stat alignment.
+    \item \textbf{Ensemble weighting:} LightGBM 70\%, Ridge 30\%. Optimized via validation.
+    \item \textbf{Hyperparameters:} Ridge $\alpha$ = 1.0; LightGBM: 100 trees, depth = 8, rate = 0.1.
 \end{itemize}
 
 \vfill
